@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f5f5f5"
+    android:orientation="vertical"
+    tools:context="com.qwh.findtutor.ui.fragment.HomeFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/holo_blue_dark">
+
+        <TextView
+            android:id="@+id/tv_home_adress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="福州"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="首页"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+
+        <ImageButton
+            android:id="@+id/ibtn_home_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:src="@android:drawable/ic_menu_search" />
+
+    </RelativeLayout>
+
+
+    <com.qwh.findtutor.view.MyScrollview
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+        <!-- android:descendantFocusability="blocksDescendants"该属性当进入界面时让列表以上布局进入就显示 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:descendantFocusability="blocksDescendants"
+            android:orientation="vertical">
+
+            <com.qwh.findtutor.view.Banner xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/banner_home"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                app:indicator_margin="8dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorPrimary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+
+                <RelativeLayout
+                    android:id="@+id/rl_home_teacher"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/white">
+
+                    <com.qwh.findtutor.view.LabelView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:backgroundColor="@color/colorPrimaryDark"
+                        app:direction="leftTop"
+                        app:labelTopPadding="30dp"
+                        app:textContent="教员库"
+                        app:textContentSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@android:drawable/ic_menu_myplaces" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_home_student"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/white">
+
+                    <com.qwh.findtutor.view.LabelView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:backgroundColor="@color/colorPrimaryDark"
+                        app:direction="leftTop"
+                        app:labelTopPadding="30dp"
+                        app:textContent="学员库"
+                        app:textContentSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@android:drawable/ic_menu_myplaces" />
+                    <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:drawableTop="@android:drawable/ic_menu_myplaces"-->
+                    <!--android:text="学员库"-->
+                    <!--android:textColor="@android:color/secondary_text_light"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:textStyle="italic" />-->
+                </RelativeLayout>
+            </LinearLayout>
+
+            <include layout="@layout/home_hot_course" />
+
+            <include layout="@layout/home_course_label" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/id_main_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp" />
+        </LinearLayout>
+    </com.qwh.findtutor.view.MyScrollview>
+</LinearLayout>
