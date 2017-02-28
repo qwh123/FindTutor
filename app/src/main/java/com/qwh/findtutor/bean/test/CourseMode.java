@@ -1,4 +1,4 @@
-package com.qwh.findtutor.bean;
+package com.qwh.findtutor.bean.test;
 
 import com.qwh.findtutor.ui.activity.DropMenu.entity.FilterType;
 

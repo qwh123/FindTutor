@@ -13,7 +13,7 @@
             android:id="@+id/rv_need_center_teacher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"></android.support.v7.widget.RecyclerView>
+            android:paddingTop="10dp"></android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

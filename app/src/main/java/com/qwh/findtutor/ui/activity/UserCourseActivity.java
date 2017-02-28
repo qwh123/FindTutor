@@ -12,7 +12,8 @@ import android.view.View;
 
 import com.qwh.findtutor.R;
 import com.qwh.findtutor.adapter.TabAdapter;
-import com.qwh.findtutor.ui.fragment.CourseFragment;
+import com.qwh.findtutor.ui.fragment.NeedCenterStudentFragment;
+import com.qwh.findtutor.ui.fragment.UserCourseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class UserCourseActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         getSupportActionBar().setTitle(getString(R.string.my_course));
-        toolbar.setNavigationIcon(AppCompatResources.getDrawable(this, R.drawable.icon_back));
+        toolbar.setNavigationIcon(AppCompatResources.getDrawable(this, R.mipmap.em_back));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,10 +60,10 @@ public class UserCourseActivity extends AppCompatActivity {
     }
 
     public void initView() {
-        mTitles.add("已报名");
+        mTitles.add("进行中");
         mTitles.add("已结课");
-        fragments.add(new CourseFragment());
-        fragments.add(new CourseFragment());
+        fragments.add(new UserCourseFragment());
+        fragments.add(new NeedCenterStudentFragment());
         viewpagerUserCourse.setAdapter(new TabAdapter(getSupportFragmentManager(), fragments, mTitles));
         tabUserCourse.setSelectedTabIndicatorColor(getResources().getColor(android.R.color.white));
         tabUserCourse.setSelectedTabIndicatorHeight(5);

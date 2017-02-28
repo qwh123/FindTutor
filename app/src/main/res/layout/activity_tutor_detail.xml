@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.qwh.findtutor.ui.activity.TutorDetailActivity">
+    tools:context="com.qwh.findtutor.ui.activity.TeacherDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -37,36 +37,36 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:layout_collapseMode="pin" />
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
-
-    <android.support.v4.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="24dp">
+            android:background="@android:color/white">
 
+        </android.support.design.widget.TabLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:text="这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n这里为老师详细内容\n\n"
-                android:textColor="#000000"
-                android:textSize="14sp" />
-        </LinearLayout>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="44dp">
 
-    </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.view.ViewPager>
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/btn_tutor_detail_join"
@@ -74,8 +74,7 @@
         android:layout_height="44dp"
         android:layout_gravity="bottom"
         android:background="@android:color/holo_red_light"
-        android:text="报名参加 "
+        android:text="联系老师"
         android:textColor="@android:color/white"
         android:textSize="18sp" />
-
 </android.support.design.widget.CoordinatorLayout>

@@ -19,7 +19,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class InfoDetailActivity extends AppCompatActivity {
+public class StudentDetailActivity extends AppCompatActivity {
 
     @Bind(R.id.btn_info_detail_about)
     Button btnInfoAbout;
@@ -41,14 +41,13 @@ public class InfoDetailActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        getSupportActionBar().setTitle(getIntent().getStringExtra("info_title"));
-        toolbar.setNavigationIcon(AppCompatResources.getDrawable(this, R.drawable.icon_back));
+        getSupportActionBar().setTitle(getIntent().getStringExtra("student_title"));
+        toolbar.setNavigationIcon(AppCompatResources.getDrawable(this, R.mipmap.em_back));
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.tutor_detail_toolbar, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -57,9 +56,6 @@ public class InfoDetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                return true;
-            case R.id.action_share:
-                startActivity(new Intent(InfoDetailActivity.this, CommentActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

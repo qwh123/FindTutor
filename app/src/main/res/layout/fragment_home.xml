@@ -138,7 +138,7 @@
                 android:id="@+id/id_main_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp" />
+                android:paddingTop="10dp" />
         </LinearLayout>
     </com.qwh.findtutor.view.MyScrollview>
 </LinearLayout>

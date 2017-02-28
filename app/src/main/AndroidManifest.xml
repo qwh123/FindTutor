@@ -36,13 +36,10 @@
             android:name=".ui.MainActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".ui.activity.TutorDetailActivity"
+            android:name=".ui.activity.TeacherDetailActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".ui.activity.CommentActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name=".ui.activity.DropMenu.CategoryActivity"
+            android:name=".ui.activity.TeacherActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activity.RegisterActivity"
@@ -65,12 +62,14 @@
             android:name=".ui.activity.PublishActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".ui.activity.InfoDetailActivity"
+            android:name=".ui.activity.StudentDetailActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".ui.activity.SearchActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".ui.activity.StudentActivity" />
+        <activity android:name=".ui.activity.NeedCenterDetailActivity" />
+        <activity android:name=".ui.activity.CommentActivity"></activity>
     </application>
 
 </manifest>

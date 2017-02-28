@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/icon_back" />
+            android:src="@mipmap/em_back" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,68 +43,74 @@
             <EditText
                 android:id="@+id/edt_publish_nickname"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="38dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
                 android:hint="昵称(方便老师联系)"
                 android:maxEms="12"
                 android:paddingLeft="8dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/edt_publish_class"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="38dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
                 android:hint="需求课程"
                 android:maxEms="12"
                 android:paddingLeft="8dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/edt_publish_date"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="38dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
                 android:hint="上课时间"
                 android:maxEms="12"
                 android:paddingLeft="8dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/edt_publish_price"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="38dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
                 android:hint="价格区间"
                 android:maxEms="12"
                 android:paddingLeft="8dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/edt_publish_adress"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="38dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
                 android:hint="上课地点"
                 android:maxEms="12"
                 android:paddingLeft="8dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/edt_publish_way"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="38dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
                 android:hint="联系方式(手机号码)"
                 android:maxEms="12"
                 android:paddingLeft="8dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/edt_publish_other"
@@ -118,7 +124,8 @@
                 android:inputType="textPassword"
                 android:maxLength="120"
                 android:minLines="5"
-                android:padding="5dp" />
+                android:padding="5dp"
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/btn_publish"

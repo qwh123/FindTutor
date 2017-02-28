@@ -3,7 +3,6 @@ package com.qwh.findtutor.ui.activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,7 +16,6 @@ import android.widget.RadioGroup;
 
 import com.qwh.findtutor.R;
 import com.qwh.findtutor.base.BaseActivity;
-import com.qwh.findtutor.bean.InfoBean;
 import com.qwh.findtutor.utils.Utils;
 
 import butterknife.Bind;

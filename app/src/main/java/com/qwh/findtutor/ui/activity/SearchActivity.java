@@ -12,18 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.qwh.findtutor.R;
-import com.qwh.findtutor.base.BaseActivity;
 import com.qwh.findtutor.base.utils.CommonAdapter;
 import com.qwh.findtutor.base.utils.OnItemClickListener;
 import com.qwh.findtutor.base.utils.ViewHolder;
-import com.qwh.findtutor.bean.TutorBean;
+import com.qwh.findtutor.bean.test.TutorBean;
 import com.qwh.findtutor.utils.SpacesItemDecoration;
 import com.qwh.findtutor.utils.Utils;
 
@@ -101,7 +97,7 @@ public class SearchActivity extends Activity {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
-                startActivity(new Intent(SearchActivity.this, TutorDetailActivity.class)
+                startActivity(new Intent(SearchActivity.this, TeacherDetailActivity.class)
                         .putExtra("teacher_name", mData1.get(position).getName()));
             }
 

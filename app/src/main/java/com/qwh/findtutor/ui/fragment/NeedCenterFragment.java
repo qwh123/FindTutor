@@ -2,20 +2,13 @@ package com.qwh.findtutor.ui.fragment;
 
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.qwh.findtutor.R;
 import com.qwh.findtutor.adapter.TabAdapter;
 import com.qwh.findtutor.base.BaseFragment;
-import com.qwh.findtutor.ui.MainActivity;
 import com.qwh.findtutor.ui.activity.PublishActivity;
 
 import java.util.ArrayList;
@@ -42,7 +35,7 @@ public class NeedCenterFragment extends BaseFragment {
         mTitles.add("老师");
         mTitles.add("学生");
         fragments.add(new NeedCenterTeacherFragment());
-        fragments.add(new CourseFragment());
+        fragments.add(new NeedCenterStudentFragment());
         mViewPager.setAdapter(new TabAdapter(getActivity().getSupportFragmentManager(), fragments, mTitles));
         mTabLayout.setSelectedTabIndicatorColor(getActivity().getResources().getColor(android.R.color.white));
         mTabLayout.setSelectedTabIndicatorHeight(5);

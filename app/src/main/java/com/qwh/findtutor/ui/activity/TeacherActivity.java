@@ -1,4 +1,4 @@
-package com.qwh.findtutor.ui.activity.DropMenu;
+package com.qwh.findtutor.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,19 +9,17 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baiiu.filter.DropDownMenu;
 import com.baiiu.filter.interfaces.OnFilterDoneListener;
 import com.qwh.findtutor.R;
-import com.qwh.findtutor.base.BaseActivity;
 import com.qwh.findtutor.base.utils.CommonAdapter;
 import com.qwh.findtutor.base.utils.OnItemClickListener;
 import com.qwh.findtutor.base.utils.ViewHolder;
-import com.qwh.findtutor.bean.TeacherBean;
+import com.qwh.findtutor.bean.test.TeacherBean;
+import com.qwh.findtutor.ui.activity.DropMenu.DropMenuAdapter;
 import com.qwh.findtutor.ui.activity.DropMenu.entity.FilterUrl;
-import com.qwh.findtutor.ui.activity.TutorDetailActivity;
 import com.qwh.findtutor.ui.fragment.HomeFragment;
 import com.qwh.findtutor.utils.SpacesItemDecoration;
 
@@ -32,7 +30,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CategoryActivity extends Activity implements OnFilterDoneListener {
+public class TeacherActivity extends Activity implements OnFilterDoneListener {
 
 
     @Bind(R.id.mFilterContentView)
@@ -72,12 +70,12 @@ public class CategoryActivity extends Activity implements OnFilterDoneListener {
         };
         mAdapter.notifyDataSetChanged();
         recyclerviewTeacherType.setAdapter(mAdapter);
-        SpacesItemDecoration decoration = new SpacesItemDecoration(10);
+        SpacesItemDecoration decoration = new SpacesItemDecoration(3);
         recyclerviewTeacherType.addItemDecoration(decoration);
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
-                startActivity(new Intent(CategoryActivity.this, TutorDetailActivity.class)
+                startActivity(new Intent(TeacherActivity.this, TeacherDetailActivity.class)
                         .putExtra("teacher_name", mData1.get(position).getName()));
             }
 

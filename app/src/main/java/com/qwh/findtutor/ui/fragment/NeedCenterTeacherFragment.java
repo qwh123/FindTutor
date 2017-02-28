@@ -13,8 +13,8 @@ import com.qwh.findtutor.base.BaseFragment;
 import com.qwh.findtutor.base.utils.CommonAdapter;
 import com.qwh.findtutor.base.utils.OnItemClickListener;
 import com.qwh.findtutor.base.utils.ViewHolder;
-import com.qwh.findtutor.bean.InfoBean;
-import com.qwh.findtutor.ui.activity.InfoDetailActivity;
+import com.qwh.findtutor.bean.test.InfoBean;
+import com.qwh.findtutor.ui.activity.StudentDetailActivity;
 import com.qwh.findtutor.utils.SpacesItemDecoration;
 
 import java.util.ArrayList;
@@ -98,7 +98,7 @@ public class NeedCenterTeacherFragment extends BaseFragment {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
-                startActivity(new Intent(getActivity(), InfoDetailActivity.class)
+                startActivity(new Intent(getActivity(), StudentDetailActivity.class)
                         .putExtra("info_title", mList.get(position).getPub_name()));
 
             }

@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.google.gson.internal.$Gson$Types;
+import com.qwh.findtutor.bean.Param;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -67,7 +68,7 @@ public class OkHttpUtils {
      *
      * @return OkHttpUtils
      */
-    private synchronized static OkHttpUtils getmInstance() {
+    private synchronized static OkHttpUtils getInstance() {
         if (mInstance == null) {
             mInstance = new OkHttpUtils();
         }
@@ -190,7 +191,7 @@ public class OkHttpUtils {
      * @param callback 请求回调
      */
     public static void get(String url, ResultCallback callback) {
-        getmInstance().getRequest(url, callback);
+        getInstance().getRequest(url, callback);
     }
 
     /**
@@ -201,7 +202,7 @@ public class OkHttpUtils {
      * @param params   请求参数
      */
     public static void post(String url, final ResultCallback callback, List<Param> params) {
-        getmInstance().postRequest(url, callback, params);
+        getInstance().postRequest(url, callback, params);
     }
 
     /**
@@ -241,22 +242,5 @@ public class OkHttpUtils {
         public abstract void onFailure(Exception e);
     }
 
-    /**
-     * post请求参数类
-     */
-    public static class Param {
-
-        String key;//请求的参数
-        String value;//参数的值
-
-        public Param() {
-        }
-
-        public Param(String key, String value) {
-            this.key = key;
-            this.value = value;
-        }
-
-    }
 
 }

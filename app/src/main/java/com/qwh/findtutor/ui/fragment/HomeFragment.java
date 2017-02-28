@@ -19,13 +19,14 @@ import com.qwh.findtutor.base.BaseFragment;
 import com.qwh.findtutor.base.utils.CommonAdapter;
 import com.qwh.findtutor.base.utils.OnItemClickListener;
 import com.qwh.findtutor.base.utils.ViewHolder;
-import com.qwh.findtutor.bean.CourseMode;
-import com.qwh.findtutor.bean.TestBean;
-import com.qwh.findtutor.bean.TutorBean;
-import com.qwh.findtutor.ui.activity.DropMenu.CategoryActivity;
+import com.qwh.findtutor.bean.test.CourseMode;
+import com.qwh.findtutor.bean.Param;
+import com.qwh.findtutor.bean.test.TestBean;
+import com.qwh.findtutor.bean.test.TutorBean;
+import com.qwh.findtutor.ui.activity.TeacherActivity;
 import com.qwh.findtutor.ui.activity.SearchActivity;
 import com.qwh.findtutor.ui.activity.StudentActivity;
-import com.qwh.findtutor.ui.activity.TutorDetailActivity;
+import com.qwh.findtutor.ui.activity.TeacherDetailActivity;
 import com.qwh.findtutor.utils.OkHttpUtils;
 import com.qwh.findtutor.utils.SpacesItemDecoration;
 import com.qwh.findtutor.utils.Utils;
@@ -59,17 +60,19 @@ public class HomeFragment extends BaseFragment {
     private CommonAdapter<TutorBean> mAdapter;
     private CommonAdapter<String> mHotAdapter;
     private CommonAdapter<String> mLabelAdapter;
-
-    String[] images = new String[]{
-            "http://img.zcool.cn/community/01ae5656e1427f6ac72531cb72bac5.jpg",
-            "http://img.zcool.cn/community/0166c756e1427432f875520f7cc838.jpg",
-            "http://img.zcool.cn/community/018fdb56e1428632f875520f7b67cb.jpg",
-            "http://img.zcool.cn/community/01c8dc56e1428e6ac72531cbaa5f2c.jpg",
-            "http://img.zcool.cn/community/01fda356640b706ac725b2c8b99b08.jpg",
-            "http://img.zcool.cn/community/01fd2756e142716ac72531cbf8bbbf.jpg",
-            "http://img.zcool.cn/community/0114a856640b6d32f87545731c076a.jpg"};
+    //
+//    String[] images = new String[]{
+//            "http://img.zcool.cn/community/01ae5656e1427f6ac72531cb72bac5.jpg",
+//            "http://img.zcool.cn/community/0166c756e1427432f875520f7cc838.jpg",
+//            "http://img.zcool.cn/community/018fdb56e1428632f875520f7b67cb.jpg",
+//            "http://img.zcool.cn/community/01c8dc56e1428e6ac72531cbaa5f2c.jpg",
+//            "http://img.zcool.cn/community/01fda356640b706ac725b2c8b99b08.jpg",
+//            "http://img.zcool.cn/community/01fd2756e142716ac72531cbf8bbbf.jpg",
+//            "http://img.zcool.cn/community/0114a856640b6d32f87545731c076a.jpg"};
+    List<Object> images = new ArrayList<>();
 
     private OnHeadlineSelectedListener mCallback;
+
     // 用来存放fragment的Activtiy必须实现这个接口
     public interface OnHeadlineSelectedListener {
         public void onFragmentSelected(int position);
@@ -101,6 +104,9 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initBanner() {
+        images.add("http://img.zcool.cn/community/01ae5656e1427f6ac72531cb72bac5.jpg");
+        images.add("http://img.zcool.cn/community/018fdb56e1428632f875520f7b67cb.jpg");
+        images.add("http://img.zcool.cn/community/01c8dc56e1428e6ac72531cbaa5f2c.jpg");
         banner.setBannerStyle(Banner.NUM_INDICATOR_TITLE);
         banner.setIndicatorGravity(Banner.CENTER);
         banner.setDelayTime(5000);//设置轮播间隔时间
@@ -129,7 +135,7 @@ public class HomeFragment extends BaseFragment {
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
 //                startActivity(new Intent(getActivity(), TutorDetailActivity.class)
 //                        .putExtra("teacher_name", mHotList.get(position).getName()));
-                startActivity(new Intent(getActivity(), CategoryActivity.class)
+                startActivity(new Intent(getActivity(), TeacherActivity.class)
                         .putExtra(KEY_TYPE, VALUE_TYPE_COURSE)
                         .putExtra("positionTitle", mHotList.get(position)));
             }
@@ -162,7 +168,7 @@ public class HomeFragment extends BaseFragment {
 //                        .putExtra("teacher_name", mHotList.get(position).getName()));
                 final List<String> list = new CourseMode().getFilterType().get(position).getChild();
                 if (list == null || list.size() == 0) {
-                    startActivity(new Intent(getActivity(), CategoryActivity.class)
+                    startActivity(new Intent(getActivity(), TeacherActivity.class)
                             .putExtra(KEY_TYPE, VALUE_TYPE_COURSE)
                             .putExtra("positionTitle", mLabel.get(position)));
                     return;
@@ -186,7 +192,7 @@ public class HomeFragment extends BaseFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Log.i("HomeFragment", "onClick: " + list.get(i));
-                        startActivity(new Intent(getActivity(), CategoryActivity.class)
+                        startActivity(new Intent(getActivity(), TeacherActivity.class)
                                 .putExtra(KEY_TYPE, VALUE_TYPE_COURSE)
                                 .putExtra("positionTitle", s + list.get(i)));
                     }
@@ -211,12 +217,12 @@ public class HomeFragment extends BaseFragment {
         };
         mAdapter.notifyDataSetChanged();
         idMainRecyclerview.setAdapter(mAdapter);
-        SpacesItemDecoration decoration = new SpacesItemDecoration(10);
+        SpacesItemDecoration decoration = new SpacesItemDecoration(1);
         idMainRecyclerview.addItemDecoration(decoration);
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
-                startActivity(new Intent(getActivity(), TutorDetailActivity.class)
+                startActivity(new Intent(getActivity(), TeacherDetailActivity.class)
                         .putExtra("teacher_name", mData.get(position).getName()));
             }
 
@@ -240,7 +246,7 @@ public class HomeFragment extends BaseFragment {
                 break;
             case R.id.rl_home_teacher:
 
-                intent = new Intent(getActivity(), CategoryActivity.class);
+                intent = new Intent(getActivity(), TeacherActivity.class);
                 intent.putExtra(KEY_TYPE, VALUE_TYPE_TEACHER);
                 break;
             case R.id.rl_home_student:
@@ -259,7 +265,7 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     protected void loadData() {
-        List<OkHttpUtils.Param> params = new ArrayList<>();
+        List<Param> params = new ArrayList<>();
 //        params.add(new OkHttpUtils.Param("key", "value"));
         OkHttpUtils.get("http://120.76.239.100/TJClan/TJClan/web/user/hall/get", new call());
         mData = new ArrayList<>();

@@ -1,8 +1,6 @@
 package com.qwh.findtutor.ui.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -13,18 +11,14 @@ import com.qwh.findtutor.base.BaseActivity;
 import com.qwh.findtutor.base.utils.CommonAdapter;
 import com.qwh.findtutor.base.utils.OnItemClickListener;
 import com.qwh.findtutor.base.utils.ViewHolder;
-import com.qwh.findtutor.bean.StudentBean;
-import com.qwh.findtutor.bean.TeacherBean;
-import com.qwh.findtutor.ui.activity.DropMenu.CategoryActivity;
+import com.qwh.findtutor.bean.test.StudentBean;
 import com.qwh.findtutor.utils.SpacesItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.smssdk.contact.m;
 
 public class StudentActivity extends BaseActivity {
 
@@ -55,11 +49,13 @@ public class StudentActivity extends BaseActivity {
         };
         mAdapter.notifyDataSetChanged();
         rvStudent.setAdapter(mAdapter);
-        SpacesItemDecoration decoration = new SpacesItemDecoration(8);
+        SpacesItemDecoration decoration = new SpacesItemDecoration(3);
         rvStudent.addItemDecoration(decoration);
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
+                startActivity(new Intent(StudentActivity.this, StudentDetailActivity.class)
+                        .putExtra("student_title", mStudentBeen.get(position).getStu_name()));
             }
 
             @Override

@@ -41,16 +41,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="专业水平:"
-                android:textColor="@android:color/secondary_text_light"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/item_main_rv_rv_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="授课类别:"
-                android:textColor="@android:color/secondary_text_light"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/item_main_rv_rv_summary"
@@ -60,8 +58,7 @@
                 android:ellipsize="end"
                 android:maxLines="4"
                 android:text="简介:这是简这是简介测试这是简介这是简这是简介测试这是简介测试介测试测试介测试"
-                android:textColor="@android:color/secondary_text_light"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
     </LinearLayout>

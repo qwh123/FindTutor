@@ -16,7 +16,7 @@ import com.baiiu.filter.util.CommonUtil;
 import com.baiiu.filter.util.UIUtil;
 import com.baiiu.filter.view.FilterCheckedTextView;
 import com.qwh.findtutor.R;
-import com.qwh.findtutor.bean.CourseMode;
+import com.qwh.findtutor.bean.test.CourseMode;
 import com.qwh.findtutor.ui.activity.DropMenu.entity.FilterType;
 import com.qwh.findtutor.ui.activity.DropMenu.entity.FilterUrl;
 import com.qwh.findtutor.ui.activity.DropMenu.view.betterDoubleGrid.BetterDoubleGridView;

@@ -160,20 +160,20 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
         }
     }
 
-    public void setImages(Object[] imagesUrl) {
-        if (imagesUrl == null || imagesUrl.length <= 0)
+    public void setImages(List<Object> imagesUrl) {
+        if (imagesUrl == null || imagesUrl.size() <= 0)
             return;
-        count = imagesUrl.length;
+        count = imagesUrl.size();
         createIndicator();
         for (int i = 0; i <= count + 1; i++) {
             ImageView iv = new ImageView(context);
             iv.setScaleType(ScaleType.CENTER_CROP);
             if (i == 0) {
-                Glide.with(context).load(imagesUrl[count - 1]).into(iv);
+                Glide.with(context).load(imagesUrl.get(count - 1)).into(iv);
             } else if (i == count + 1) {
-                Glide.with(context).load(imagesUrl[0]).into(iv);
+                Glide.with(context).load(imagesUrl.get(0)).into(iv);
             } else {
-                Glide.with(context).load(imagesUrl[i - 1]).into(iv);
+                Glide.with(context).load(imagesUrl.get(i - 1)).into(iv);
             }
             imageViews.add(iv);
         }
@@ -214,6 +214,7 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
             indicator.addView(imageView, params);
             indicatorImages.add(imageView);
         }
+        numIndicator.setText("1/" + count);
     }
 
 

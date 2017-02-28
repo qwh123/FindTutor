@@ -24,11 +24,11 @@ import butterknife.OnClick;
  */
 public class UserFragment extends Fragment {
 
-
-    @Bind(R.id.iv_user_icon)
-    ImageView ivUserIcon;
-    @Bind(R.id.iv_user_name)
-    TextView ivUserName;
+//
+//    @Bind(R.id.iv_user_icon)
+//    ImageView ivUserIcon;
+//    @Bind(R.id.iv_user_name)
+//    TextView ivUserName;
 
     public UserFragment() {
         // Required empty public constructor
