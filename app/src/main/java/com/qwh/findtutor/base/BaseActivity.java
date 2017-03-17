@@ -17,8 +17,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(setLayout());
         ButterKnife.bind(this);
         getData();
-        initView();
-
     }
 
 

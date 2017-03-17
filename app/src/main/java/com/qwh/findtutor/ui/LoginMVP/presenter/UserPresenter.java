@@ -3,10 +3,12 @@ package com.qwh.findtutor.ui.LoginMVP.presenter;
 import android.os.Handler;
 import android.text.TextUtils;
 
+import com.qwh.findtutor.bean.SharedSaveConstant;
 import com.qwh.findtutor.ui.LoginMVP.LoginContract;
 import com.qwh.findtutor.ui.LoginMVP.bean.UserBean;
 import com.qwh.findtutor.ui.LoginMVP.mode.UserMode;
 import com.qwh.findtutor.ui.LoginMVP.view.LoginActivity;
+import com.qwh.findtutor.utils.PreferenceUtil;
 
 /**
  * com.qwh.findtutor.ui.LoginMVP.presenter
@@ -28,7 +30,7 @@ public class UserPresenter extends LoginContract.IPresenter {
     }
 
     @Override
-    public void login(String userName, String pwd,String type) {
+    public void login(String userName, String pwd, String type) {
         if (TextUtils.isEmpty(userName)) {
             mView.showErrorMsg("账号不能为空");
             return;
@@ -36,18 +38,22 @@ public class UserPresenter extends LoginContract.IPresenter {
         if (TextUtils.isEmpty(pwd)) {
             mView.showErrorMsg("密码不能为空");
             return;
-        } if (TextUtils.isEmpty(type)) {
+        }
+        if (TextUtils.isEmpty(type)) {
             mView.showErrorMsg("请选择登陆身份");
             return;
         }
         mView.showProgressBar();
-        mModel.login(userName, pwd, type,new LoginContract.OnLoginListener() {
+        mModel.login(userName, pwd, type, new LoginContract.OnLoginListener() {
             @Override
             public void loginSuccess(UserBean user) {
+                PreferenceUtil.commitString(SharedSaveConstant.User_Id, user.getData().getId());
+                PreferenceUtil.commitString(SharedSaveConstant.User_Account, user.getData().getTel());
+                PreferenceUtil.commitString(SharedSaveConstant.User_Pwd, user.getData().getPassword());
+                PreferenceUtil.commitString(SharedSaveConstant.User_Type, user.getData().getType());
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-
                         mView.toIntentMain();
                         mView.hideProgressBar();
                     }
@@ -60,7 +66,7 @@ public class UserPresenter extends LoginContract.IPresenter {
                     @Override
                     public void run() {
                         mView.hideProgressBar();
-                        mView.showErrorMsg("登录失败");
+                        mView.showErrorMsg("帐号不存在或密码错误");
                     }
                 });
 
@@ -77,18 +83,13 @@ public class UserPresenter extends LoginContract.IPresenter {
 
     @Override
     public void AutoFillEdt() {
-        mModel.getUserData(new LoginContract.OnGetUserListener() {
-            @Override
-            public void getSuccess(UserBean user) {
-                mView.setAccountText(user.getUserName());
-                mView.setPwdText(user.getPsw());
-            }
+        if (!TextUtils.isEmpty(PreferenceUtil.getString(SharedSaveConstant.User_Account, ""))) {
 
-            @Override
-            public void getFail() {
-//                mView.showErrorMsg();
-            }
-        });
+            mView.setAccountText(PreferenceUtil.getString(SharedSaveConstant.User_Account, ""));
+            mView.setPwdText(PreferenceUtil.getString(SharedSaveConstant.User_Pwd, ""));
+            mView.setLoginType(PreferenceUtil.getString(SharedSaveConstant.User_Type, ""));
+        }
+
     }
 
 }

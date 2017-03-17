@@ -9,7 +9,9 @@ import android.support.v4.view.ViewPager;
 import com.qwh.findtutor.R;
 import com.qwh.findtutor.adapter.TabAdapter;
 import com.qwh.findtutor.base.BaseFragment;
+import com.qwh.findtutor.bean.SharedSaveConstant;
 import com.qwh.findtutor.ui.activity.PublishActivity;
+import com.qwh.findtutor.utils.PreferenceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +34,14 @@ public class NeedCenterFragment extends BaseFragment {
 
     @Override
     protected void initViews() {
-        mTitles.add("老师");
-        mTitles.add("学生");
-        fragments.add(new NeedCenterTeacherFragment());
-        fragments.add(new NeedCenterStudentFragment());
+            mTitles.add("需求中心");
+        if (PreferenceUtil.getString(SharedSaveConstant.User_Type, "").equals("1")) {//老师身份
+            fragments.add(new NeedCenterStudentFragment());
+        } else {
+            fragments.add(new NeedCenterTeacherFragment());
+        }
         mViewPager.setAdapter(new TabAdapter(getActivity().getSupportFragmentManager(), fragments, mTitles));
-        mTabLayout.setSelectedTabIndicatorColor(getActivity().getResources().getColor(android.R.color.white));
-        mTabLayout.setSelectedTabIndicatorHeight(5);
+        mTabLayout.setSelectedTabIndicatorHeight(0);
         mTabLayout.setTabTextColors(getResources().getColor(android.R.color.secondary_text_dark),
                 getResources().getColor(android.R.color.white));
         mTabLayout.setupWithViewPager(mViewPager);
@@ -51,7 +54,7 @@ public class NeedCenterFragment extends BaseFragment {
 
     @Override
     protected void loadData() {
-
+        initViews();
     }
 
 

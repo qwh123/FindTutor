@@ -17,7 +17,12 @@ import com.qwh.findtutor.R;
 import com.qwh.findtutor.base.utils.CommonAdapter;
 import com.qwh.findtutor.base.utils.OnItemClickListener;
 import com.qwh.findtutor.base.utils.ViewHolder;
+import com.qwh.findtutor.bean.CommonBean;
+import com.qwh.findtutor.bean.AllUserBean;
+import com.qwh.findtutor.bean.Param;
 import com.qwh.findtutor.bean.test.TeacherBean;
+import com.qwh.findtutor.http.OkHttpUtils;
+import com.qwh.findtutor.http.apiServer;
 import com.qwh.findtutor.ui.activity.DropMenu.DropMenuAdapter;
 import com.qwh.findtutor.ui.activity.DropMenu.entity.FilterUrl;
 import com.qwh.findtutor.ui.fragment.HomeFragment;
@@ -41,31 +46,33 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
 //    @Bind(R.id.mFilterContentView)
 //    TextView mFilterContentView;
 
-    private List<TeacherBean> mData = new ArrayList<>();
-    private List<TeacherBean> mData1 = new ArrayList<>();
-    private CommonAdapter<TeacherBean> mAdapter;
+    private List<AllUserBean.DataBean.UserBean> mAllData = new ArrayList<>();
+    private List<AllUserBean.DataBean.UserBean> mData1 = new ArrayList<>();
+    private CommonAdapter<AllUserBean.DataBean.UserBean> mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
         ButterKnife.bind(this);
-        initData();
-        initView();
         initFilterDropDownView();
     }
 
     public void initView() {
 
         recyclerviewTeacherType.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new CommonAdapter<TeacherBean>(this, R.layout.item_teacher, mData1) {
+        mAdapter = new CommonAdapter<AllUserBean.DataBean.UserBean>(this, R.layout.item_teacher, mAllData) {
             @Override
-            public void setData(ViewHolder holder, TeacherBean TeacherBean) {
-                holder.setImageResource(R.id.iv_item_teacher_img, TeacherBean.getImg());
-                holder.setText(R.id.tv_item_teacher_name, "教员姓名:" + TeacherBean.getName());
-                holder.setText(R.id.tv_item_teacher_class, "教授课程: " + TeacherBean.getTeach_class());
-                holder.setText(R.id.tv_item_teacher_adress, "授课范围:" + TeacherBean.getTeach_adress());
-                holder.setText(R.id.tv_item_teacher_level, "个人描述:" + TeacherBean.getTeach_level());
+            public void setData(ViewHolder holder, AllUserBean.DataBean.UserBean data) {
+                if (TextUtils.isEmpty(data.getIcon()))
+                    holder.setImageResource(R.id.iv_item_teacher_img, R.drawable.img_user);
+                else {
+                    holder.setImageWithUrl(R.id.iv_item_teacher_img, data.getIcon());
+                }
+                holder.setText(R.id.tv_item_teacher_name, "教员姓名:" + data.getNickname());
+                holder.setText(R.id.tv_item_teacher_class, "教授课程: " + data.getSubject_id());
+                holder.setText(R.id.tv_item_teacher_adress, "地址:" + data.getAddress());
+                holder.setText(R.id.tv_item_teacher_level, "备注:" + data.getDetail());
             }
         };
         mAdapter.notifyDataSetChanged();
@@ -76,7 +83,9 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
                 startActivity(new Intent(TeacherActivity.this, TeacherDetailActivity.class)
-                        .putExtra("teacher_name", mData1.get(position).getName()));
+                        .putExtra("teacher_name", mAllData.get(position).getNickname())
+                        .putExtra("id", mAllData.get(position).getId())
+                );
             }
 
             @Override
@@ -90,7 +99,7 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
         String[] titleList = new String[]{"科目", "综合排序", "筛选"};
         dropDownMenu.setMenuAdapter(new DropMenuAdapter(this, titleList, this));
         if (getIntent().getStringExtra(HomeFragment.KEY_TYPE).equals(HomeFragment.VALUE_TYPE_TEACHER)) {
-            getData("");//获取所有
+            initData(null, null, null);
         } else if (getIntent().getStringExtra(HomeFragment.KEY_TYPE).equals(HomeFragment.VALUE_TYPE_COURSE)) {
             try {
                 FilterUrl.instance().position = 0;
@@ -98,7 +107,8 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
                 if (FilterUrl.instance().position != 2) {
                     dropDownMenu.setPositionIndicatorText(FilterUrl.instance().position, FilterUrl.instance().positionTitle);
                 }
-                getData(FilterUrl.instance().positionTitle);//获取特定
+                initData(null, null, FilterUrl.instance().positionTitle);
+//                getData(FilterUrl.instance().positionTitle);//获取特定
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
@@ -113,7 +123,7 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
 
         dropDownMenu.close();
         Log.i("dropdown:", "youchoose:==>" + FilterUrl.instance().toString());
-
+//        initData(null, null, FilterUrl.instance().positionTitle);
         getData(FilterUrl.instance().getChoose());
         FilterUrl.instance().clear();
         mAdapter.notifyDataSetChanged();
@@ -124,13 +134,12 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
         Log.i("dropdown:", "youchoose1:==>" + content);
         mData1.clear();
         if (TextUtils.isEmpty(content)) {//获取所有
-            for (TeacherBean data : mData) {
+            for (AllUserBean.DataBean.UserBean data : mAllData) {
                 mData1.add(data);
             }
         } else
-            for (TeacherBean data : mData) {
-                Log.i("dropdown:", "youchoose1:==>" + data.getTeach_class());
-                if (content.contains(data.getTeach_class()) ) {//获取特定
+            for (AllUserBean.DataBean.UserBean data : mAllData) {
+                if (content.contains(data.getSubject_id())) {//获取特定
                     mData1.add(data);
                 }
             }
@@ -144,22 +153,46 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
         FilterUrl.instance().clear();
     }
 
-    public void initData() {
+    /**
+     * @param sex        性别
+     * @param address    地址
+     * @param subject_id 科目
+     */
+    public void initData(String sex, String address, String subject_id) {
+        List<Param> params = new ArrayList<>();
+        params.add(new Param("type", "1"));
+        if (!TextUtils.isEmpty(sex))
+            params.add(new Param("sex", sex));
+        if (!TextUtils.isEmpty(address))
+            params.add(new Param("address", address));
+        if (!TextUtils.isEmpty(subject_id))
+            params.add(new Param("subject_id", subject_id));
+        OkHttpUtils.post(apiServer.URL_Get_Teacher, new OkHttpUtils.ResultCallback<AllUserBean>() {
+            @Override
+            public void onSuccess(AllUserBean data) {
+                mAllData = data.getData().getUser();
+                initView();
+            }
 
+            @Override
+            public void onFailure(Exception e) {
 
-        mData.add(new TeacherBean("0x001", R.drawable.img_user, "张老师", "小学语文", "仓山区，鼓楼区", "汉语甲级"));
-        mData.add(new TeacherBean("0x002", R.drawable.img_user, "张老师", "小学数学", "鼓楼区", "精通函数"));
-        mData.add(new TeacherBean("0x003", R.drawable.img_user, "丘老师", "小学语文", "仓山区，鼓楼区", "汉语甲级"));
-        mData.add(new TeacherBean("0x004", R.drawable.img_user, "李老师", "小学数学", "仓山区", "精通函数"));
-        mData.add(new TeacherBean("0x005", R.drawable.img_user, "丘老师", "初中英语", "仓山区，鼓楼区", "英语六级，留过学"));
-        mData.add(new TeacherBean("0x006", R.drawable.img_user, "范老师", "小学语文", "仓山区", "汉语甲级"));
-        mData.add(new TeacherBean("0x007", R.drawable.img_user, "张老师", "初中英语", "仓山区，鼓楼区", "英语六级"));
-        mData.add(new TeacherBean("0x008", R.drawable.img_user, "范老师", "小学语文", "鼓楼区", "汉语甲级"));
-        mData.add(new TeacherBean("0x009", R.drawable.img_user, "黄老师", "初中英语", "仓山区，鼓楼区", "英语六级"));
-        mData.add(new TeacherBean("0x0010", R.drawable.img_user, "黄老师", "高中物理", "仓山区，鼓楼区", "物理科毕业"));
-        mData.add(new TeacherBean("0x0011", R.drawable.img_user, "林老师", "高中物理", "仓山区", "物理科毕业"));
-        mData.add(new TeacherBean("0x0012", R.drawable.img_user, "林老师", "高中物理", "仓山区", "物理科毕业"));
-        mData.add(new TeacherBean("0x0013", R.drawable.img_user, "张老师", "艺术", "仓山区，鼓楼区", "省级舞蹈大赛一等奖"));
+            }
+        }, params);
+
+//        mData.add(new TeacherBean("0x001", R.drawable.img_user, "张老师", "小学语文", "仓山区，鼓楼区", "汉语甲级"));
+//        mData.add(new TeacherBean("0x002", R.drawable.img_user, "张老师", "小学数学", "鼓楼区", "精通函数"));
+//        mData.add(new TeacherBean("0x003", R.drawable.img_user, "丘老师", "小学语文", "仓山区，鼓楼区", "汉语甲级"));
+//        mData.add(new TeacherBean("0x004", R.drawable.img_user, "李老师", "小学数学", "仓山区", "精通函数"));
+//        mData.add(new TeacherBean("0x005", R.drawable.img_user, "丘老师", "初中英语", "仓山区，鼓楼区", "英语六级，留过学"));
+//        mData.add(new TeacherBean("0x006", R.drawable.img_user, "范老师", "小学语文", "仓山区", "汉语甲级"));
+//        mData.add(new TeacherBean("0x007", R.drawable.img_user, "张老师", "初中英语", "仓山区，鼓楼区", "英语六级"));
+//        mData.add(new TeacherBean("0x008", R.drawable.img_user, "范老师", "小学语文", "鼓楼区", "汉语甲级"));
+//        mData.add(new TeacherBean("0x009", R.drawable.img_user, "黄老师", "初中英语", "仓山区，鼓楼区", "英语六级"));
+//        mData.add(new TeacherBean("0x0010", R.drawable.img_user, "黄老师", "高中物理", "仓山区，鼓楼区", "物理科毕业"));
+//        mData.add(new TeacherBean("0x0011", R.drawable.img_user, "林老师", "高中物理", "仓山区", "物理科毕业"));
+//        mData.add(new TeacherBean("0x0012", R.drawable.img_user, "林老师", "高中物理", "仓山区", "物理科毕业"));
+//        mData.add(new TeacherBean("0x0013", R.drawable.img_user, "张老师", "艺术", "仓山区，鼓楼区", "省级舞蹈大赛一等奖"));
     }
 
     @OnClick(R.id.iv_teacher_type_back)

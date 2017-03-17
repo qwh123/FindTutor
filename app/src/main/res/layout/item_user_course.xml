@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:orientation="vertical">
 
         <RelativeLayout
@@ -27,7 +28,6 @@
                 app:direction="rightTop"
                 app:labelTopDistance="20dp"
                 app:labelTopPadding="0dp"
-                app:textContent="被拒接"
                 app:textContentSize="14sp" />
 
 
@@ -93,6 +93,7 @@
             android:id="@+id/rl_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="3dp">
 
             <View
@@ -105,6 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="33dp"
                 android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/edt_search_bg"
                 android:text="去评价" />

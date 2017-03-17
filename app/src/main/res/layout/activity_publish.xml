@@ -43,59 +43,10 @@
             <EditText
                 android:id="@+id/edt_publish_nickname"
                 android:layout_width="match_parent"
-                android:layout_height="38dp"
+                android:layout_height="36dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
-                android:hint="昵称(方便老师联系)"
-                android:maxEms="12"
-                android:paddingLeft="8dp"
-                android:singleLine="true"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/edt_publish_class"
-                android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/edt_search_bg"
-                android:hint="需求课程"
-                android:maxEms="12"
-                android:paddingLeft="8dp"
-                android:singleLine="true"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/edt_publish_date"
-                android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/edt_search_bg"
-                android:hint="上课时间"
-                android:maxEms="12"
-                android:paddingLeft="8dp"
-                android:singleLine="true"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/edt_publish_price"
-                android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/edt_search_bg"
-                android:hint="价格区间"
-                android:maxEms="12"
-                android:paddingLeft="8dp"
-                android:singleLine="true"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/edt_publish_adress"
-                android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/edt_search_bg"
-                android:hint="上课地点"
-                android:maxEms="12"
+                android:hint="请输入昵称(方便老师联系)"
                 android:paddingLeft="8dp"
                 android:singleLine="true"
                 android:textSize="14sp" />
@@ -103,14 +54,59 @@
             <EditText
                 android:id="@+id/edt_publish_way"
                 android:layout_width="match_parent"
-                android:layout_height="38dp"
+                android:layout_height="36dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
-                android:hint="联系方式(手机号码)"
-                android:maxEms="12"
+                android:hint="联系方式(请输入手机号)"
+                android:maxLength="11"
                 android:paddingLeft="8dp"
                 android:singleLine="true"
                 android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edt_publish_class"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edt_search_bg"
+                android:hint="请输入需求课程"
+                android:paddingLeft="8dp"
+                android:singleLine="true"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edt_publish_date"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edt_search_bg"
+                android:hint="请输入上课时间"
+                android:paddingLeft="8dp"
+                android:singleLine="true"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/edt_publish_price"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edt_search_bg"
+                android:gravity="left|center_vertical"
+                android:hint="请选择价格区间"
+                android:paddingLeft="8dp"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edt_publish_adress"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edt_search_bg"
+                android:hint="请输入上课地点"
+                android:paddingLeft="8dp"
+                android:singleLine="true"
+                android:textSize="14sp" />
+
 
             <EditText
                 android:id="@+id/edt_publish_other"
@@ -121,7 +117,6 @@
                 android:ellipsize="end"
                 android:gravity="left|top"
                 android:hint="有哪些需求或期望(可不写)"
-                android:inputType="textPassword"
                 android:maxLength="120"
                 android:minLines="5"
                 android:padding="5dp"
@@ -130,7 +125,7 @@
             <Button
                 android:id="@+id/btn_publish"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="44dp"
                 android:layout_marginTop="20dp"
                 android:background="@color/colorPrimary"
                 android:text="@string/publish"

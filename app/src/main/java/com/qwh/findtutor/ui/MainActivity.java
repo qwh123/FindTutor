@@ -71,7 +71,7 @@ public class MainActivity extends BaseActivity implements HomeFragment.OnHeadlin
 
     @Override
     public void getData() {
-
+        initView();
     }
 
     protected void initVariables() {

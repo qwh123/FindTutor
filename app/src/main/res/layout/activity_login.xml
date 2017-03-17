@@ -11,6 +11,13 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/holo_blue_dark">
 
+        <ImageView
+            android:id="@+id/iv_login_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/em_back" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,7 +98,7 @@
                 android:textSize="18sp" />
 
             <Button
-                android:id="@+id/btn_register"
+                android:id="@+id/btn_login_register"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="10dp"

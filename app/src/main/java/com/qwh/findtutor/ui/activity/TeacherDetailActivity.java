@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,8 @@ public class TeacherDetailActivity extends AppCompatActivity {
     @Bind(R.id.viewpager_detail)
     ViewPager mViewPager;
 
+    private String teacher_id;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,8 @@ public class TeacherDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         initToolBar();
         initView();
+        teacher_id=getIntent().getStringExtra("id");
+        Log.i("teacher_id", "onCreate: "+teacher_id);
     }
 
     private void initToolBar() {
@@ -98,5 +103,8 @@ public class TeacherDetailActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    public String getTeacherId(){
+        return teacher_id;
     }
 }

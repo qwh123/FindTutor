@@ -1,4 +1,4 @@
-package com.qwh.findtutor.utils;
+package com.qwh.findtutor.http;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.gson.internal.$Gson$Types;
 import com.qwh.findtutor.bean.Param;
+import com.qwh.findtutor.utils.JsonUtils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -19,6 +20,7 @@ import java.lang.reflect.Type;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -180,7 +182,6 @@ public class OkHttpUtils {
         RequestBody requestBody = builder.build();
         return new Request.Builder().url(url).post(requestBody).build();
     }
-
 
     /**********************对外接口************************/
 

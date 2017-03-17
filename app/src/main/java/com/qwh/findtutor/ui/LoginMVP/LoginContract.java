@@ -17,17 +17,9 @@ public interface LoginContract {
         void LoginError();
     }
 
-    interface OnGetUserListener {
-        void getSuccess(UserBean user);
-
-        void getFail();
-    }
-
     interface IUserMode {
 
         void login(String userName, String pwd, String type,OnLoginListener listener);
-
-        void getUserData(OnGetUserListener listener);
     }
 
     interface IUserView {
@@ -46,6 +38,7 @@ public interface LoginContract {
         void toIntentRegister();
 
         void setAccountText(String text);
+        void setLoginType(String text);
 
         void setPwdText(String text);
 

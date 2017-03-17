@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,15 +20,19 @@ import com.qwh.findtutor.base.BaseFragment;
 import com.qwh.findtutor.base.utils.CommonAdapter;
 import com.qwh.findtutor.base.utils.OnItemClickListener;
 import com.qwh.findtutor.base.utils.ViewHolder;
+import com.qwh.findtutor.bean.IHomeBean;
+import com.qwh.findtutor.bean.SharedSaveConstant;
 import com.qwh.findtutor.bean.test.CourseMode;
 import com.qwh.findtutor.bean.Param;
 import com.qwh.findtutor.bean.test.TestBean;
 import com.qwh.findtutor.bean.test.TutorBean;
+import com.qwh.findtutor.http.apiServer;
 import com.qwh.findtutor.ui.activity.TeacherActivity;
 import com.qwh.findtutor.ui.activity.SearchActivity;
 import com.qwh.findtutor.ui.activity.StudentActivity;
 import com.qwh.findtutor.ui.activity.TeacherDetailActivity;
-import com.qwh.findtutor.utils.OkHttpUtils;
+import com.qwh.findtutor.http.OkHttpUtils;
+import com.qwh.findtutor.utils.PreferenceUtil;
 import com.qwh.findtutor.utils.SpacesItemDecoration;
 import com.qwh.findtutor.utils.Utils;
 import com.qwh.findtutor.view.Banner;
@@ -50,25 +55,19 @@ public class HomeFragment extends BaseFragment {
     TextView tvAdress;
     @Bind(R.id.banner_home)
     Banner banner;
+    @Bind(R.id.ll_teacher)
+    LinearLayout llTeacher;
     @Bind(R.id.id_main_recyclerview)
     RecyclerView idMainRecyclerview;
     @Bind(R.id.rv_home_hot_course)
     RecyclerView rvHotCourse;
     @Bind(R.id.rv_home_course_label)
     RecyclerView rvHotLabel;
-    private List<TutorBean> mData;
-    private CommonAdapter<TutorBean> mAdapter;
+    private List<IHomeBean.DataBean.IHomeUserBean> mData;
+    private List<IHomeBean.DataBean.BannerBean> mBanner;
+    private CommonAdapter<IHomeBean.DataBean.IHomeUserBean> mAdapter;
     private CommonAdapter<String> mHotAdapter;
     private CommonAdapter<String> mLabelAdapter;
-    //
-//    String[] images = new String[]{
-//            "http://img.zcool.cn/community/01ae5656e1427f6ac72531cb72bac5.jpg",
-//            "http://img.zcool.cn/community/0166c756e1427432f875520f7cc838.jpg",
-//            "http://img.zcool.cn/community/018fdb56e1428632f875520f7b67cb.jpg",
-//            "http://img.zcool.cn/community/01c8dc56e1428e6ac72531cbaa5f2c.jpg",
-//            "http://img.zcool.cn/community/01fda356640b706ac725b2c8b99b08.jpg",
-//            "http://img.zcool.cn/community/01fd2756e142716ac72531cbf8bbbf.jpg",
-//            "http://img.zcool.cn/community/0114a856640b6d32f87545731c076a.jpg"};
     List<Object> images = new ArrayList<>();
 
     private OnHeadlineSelectedListener mCallback;
@@ -94,16 +93,23 @@ public class HomeFragment extends BaseFragment {
     protected void initViews() {
         //填充轮播图
         initBanner();
-        //填充热门科目数据
-        initRvHot();
-        //填充科目标签
-        initRvLabel();
+        if (!PreferenceUtil.getString(SharedSaveConstant.User_Type, "").equals("1")) {
+
+            //填充热门科目数据
+            initRvHot();
+            //填充科目标签
+            initRvLabel();
+        } else {
+            llTeacher.setVisibility(View.GONE);
+        }
         //填充推荐表数据
         initRvRec();
-
     }
 
     private void initBanner() {
+//        for (IHomeBean.DataBean.BannerBean bean : mBanner) {
+//            images.add(bean.getIcon());
+//        }
         images.add("http://img.zcool.cn/community/01ae5656e1427f6ac72531cb72bac5.jpg");
         images.add("http://img.zcool.cn/community/018fdb56e1428632f875520f7b67cb.jpg");
         images.add("http://img.zcool.cn/community/01c8dc56e1428e6ac72531cbaa5f2c.jpg");
@@ -206,13 +212,17 @@ public class HomeFragment extends BaseFragment {
             Toast.makeText(getActivity(), "数据为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        mAdapter = new CommonAdapter<TutorBean>(getActivity(), R.layout.item_main_rv, mData) {
+        mAdapter = new CommonAdapter<IHomeBean.DataBean.IHomeUserBean>(getActivity(), R.layout.item_main_rv, mData) {
             @Override
-            public void setData(ViewHolder holder, TutorBean TutorBean) {
-                holder.setImageResource(R.id.item_main_rv_rv_icon, TutorBean.getImg());
-                holder.setText(R.id.item_main_rv_rv_name, TutorBean.getName());
-                holder.setText(R.id.item_main_rv_rv_type, "教授课程: " + TutorBean.getType());
-                holder.setText(R.id.item_main_rv_rv_summary, TutorBean.getSummary());
+            public void setData(ViewHolder holder, IHomeBean.DataBean.IHomeUserBean data) {
+                if (data.getIcon().equals(""))
+                    holder.setImageResource(R.id.item_main_rv_icon, R.drawable.img_user);
+                else
+                    holder.setImageWithUrl(R.id.item_main_rv_icon, data.getIcon());
+                holder.setText(R.id.item_main_rv_name, data.getNickname());
+                holder.setText(R.id.item_main_rv_level, "科目:" + data.getSubject_id());
+                holder.setText(R.id.item_main_rv_adress, "上课地址:" + data.getAddress());
+                holder.setText(R.id.item_main_rv_summary, "创建时间:" + data.getCreate_time());
             }
         };
         mAdapter.notifyDataSetChanged();
@@ -223,7 +233,9 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
                 startActivity(new Intent(getActivity(), TeacherDetailActivity.class)
-                        .putExtra("teacher_name", mData.get(position).getName()));
+                        .putExtra("teacher_name", mData.get(position).getNickname())
+                        .putExtra("id", mData.get(position).getId())
+                );
             }
 
             @Override
@@ -265,29 +277,24 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     protected void loadData() {
-        List<Param> params = new ArrayList<>();
-//        params.add(new OkHttpUtils.Param("key", "value"));
-        OkHttpUtils.get("http://120.76.239.100/TJClan/TJClan/web/user/hall/get", new call());
-        mData = new ArrayList<>();
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "黄老师", "英语", "you are good一讲每周一讲每周一讲每周一讲每周一讲每周一讲每周一讲每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "黄老师", "英语", "you are good一讲每周一讲每周一讲每周一讲每周一讲每周一讲每周一讲每周一讲"));
-        mData.add(new TutorBean(R.drawable.icon_detail_bg, "张老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.drawable.icon_detail_bg, "张老师", "语文", "每周一讲"));
+        OkHttpUtils.get(apiServer.URL_Index, new OkHttpUtils.ResultCallback<IHomeBean>() {
+            @Override
+            public void onSuccess(IHomeBean response) {
+                if (response.getCode() == 200) {
+
+                    mData = response.getData().getIHome_user();
+                    mBanner = response.getData().getBanner();
+                    initViews();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
     }
 
-    private class call extends OkHttpUtils.ResultCallback<TestBean> {
-
-        @Override
-        public void onSuccess(TestBean response) {
-            Log.i("okhttp", "onSuccess: " + response.getSummary());
-        }
-
-        @Override
-        public void onFailure(Exception e) {
-            Log.i("okhttp", "onFailure: " + e.toString());
-        }
-    }
 
     //如果你需要考虑更好的体验，可以这么操作
     @Override

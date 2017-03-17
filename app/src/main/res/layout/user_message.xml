@@ -64,7 +64,6 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
                 android:hint="昵称"
-                android:inputType="number"
                 android:maxEms="12"
                 android:paddingLeft="8dp"
                 android:singleLine="true"
@@ -94,41 +93,72 @@
             </RadioGroup>
 
 
+            <EditText
+                android:id="@+id/edt_user_message_nianji"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edt_search_bg"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="8dp"
+                android:hint="专业水平"
+                android:textSize="14sp" />
+            <Button
+                android:id="@+id/btn_user_message_nianji"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edt_search_bg"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="8dp"
+                android:hint="年级"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edt_user_message_contact"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edt_search_bg"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="8dp"
+                android:hint="联系方式"
+                android:textSize="14sp" />
+
             <Button
                 android:id="@+id/btn_user_message_adress"
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
-
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
                 android:gravity="center_vertical|left"
-                android:hint="住址"
+                android:hint="所在城市"
                 android:paddingLeft="8dp"
                 android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/edt_user_message_way"
+                android:id="@+id/edt_user_message_class_adress"
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
-                android:hint="联系方式(电话,qq号,微信号均可)"
+                android:hint="上课地址"
                 android:maxEms="12"
                 android:paddingLeft="8dp"
                 android:singleLine="true"
                 android:textSize="14sp" />
 
+
             <EditText
                 android:id="@+id/edt_user_message_sign"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edt_search_bg"
                 android:ellipsize="end"
                 android:gravity="left|top"
-                android:hint="个性签名"
-                android:inputType="textPassword"
-                android:maxLength="120"
+                android:hint="备注"
+                android:maxLength="60"
                 android:minLines="5"
                 android:padding="5dp"
                 android:textSize="14sp" />
@@ -136,7 +166,8 @@
             <Button
                 android:id="@+id/btn_update"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="44dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginTop="20dp"
                 android:background="@color/colorPrimary"
                 android:text="@string/update"

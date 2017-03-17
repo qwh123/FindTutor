@@ -130,9 +130,16 @@
                 </RelativeLayout>
             </LinearLayout>
 
-            <include layout="@layout/home_hot_course" />
+            <LinearLayout
+                android:id="@+id/ll_teacher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <include layout="@layout/home_course_label" />
+                <include layout="@layout/home_hot_course" />
+
+                <include layout="@layout/home_course_label" />
+            </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/id_main_recyclerview"

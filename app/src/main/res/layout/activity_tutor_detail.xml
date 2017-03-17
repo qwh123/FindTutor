@@ -75,6 +75,7 @@
         android:layout_gravity="bottom"
         android:background="@android:color/holo_red_light"
         android:text="联系老师"
+        android:visibility="gone"
         android:textColor="@android:color/white"
         android:textSize="18sp" />
 </android.support.design.widget.CoordinatorLayout>

@@ -11,6 +11,13 @@ import android.widget.RatingBar;
 
 import com.qwh.findtutor.R;
 import com.qwh.findtutor.base.BaseActivity;
+import com.qwh.findtutor.bean.CommentBean;
+import com.qwh.findtutor.bean.Param;
+import com.qwh.findtutor.http.OkHttpUtils;
+import com.qwh.findtutor.http.apiServer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -67,6 +74,18 @@ public class CommentActivity extends BaseActivity {
 
     @Override
     public void getData() {
+        List<Param> params = new ArrayList<>();
+        OkHttpUtils.post(apiServer.URL_Stu_Comment, new OkHttpUtils.ResultCallback<CommentBean>() {
+            @Override
+            public void onSuccess(CommentBean data) {
+                initView();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        }, params);
 
     }
 
@@ -82,8 +101,25 @@ public class CommentActivity extends BaseActivity {
                     toast("评论内容不能为空...");
                     return;
                 }
+                SubComment();
                 break;
         }
+    }
+
+    //提交评论
+    private void SubComment() {
+        List<Param> params = new ArrayList<>();
+        OkHttpUtils.post(apiServer.URL_Stu_Sub_Comment, new OkHttpUtils.ResultCallback<CommentBean>() {
+            @Override
+            public void onSuccess(CommentBean data) {
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        }, params);
     }
 
     //提示操作

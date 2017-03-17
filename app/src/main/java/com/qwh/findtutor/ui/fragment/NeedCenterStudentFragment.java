@@ -17,8 +17,13 @@ import com.qwh.findtutor.base.BaseFragment;
 import com.qwh.findtutor.base.utils.CommonAdapter;
 import com.qwh.findtutor.base.utils.OnItemClickListener;
 import com.qwh.findtutor.base.utils.ViewHolder;
+import com.qwh.findtutor.bean.CommonBean;
+import com.qwh.findtutor.bean.Param;
+import com.qwh.findtutor.bean.ReleaseUserBean;
 import com.qwh.findtutor.bean.test.InfoBean;
 import com.qwh.findtutor.bean.test.TutorBean;
+import com.qwh.findtutor.http.OkHttpUtils;
+import com.qwh.findtutor.http.apiServer;
 import com.qwh.findtutor.ui.activity.NeedCenterDetailActivity;
 import com.qwh.findtutor.utils.SpacesItemDecoration;
 
@@ -33,26 +38,32 @@ public class NeedCenterStudentFragment extends BaseFragment {
     @Bind(R.id.srl_need_center_teacher)
     SwipeRefreshLayout mRefreshLayout;
 
-    private List<TutorBean> mData;
-    private CommonAdapter<TutorBean> mAdapter;
+    private List<ReleaseUserBean.DataBean> mData;
+    private CommonAdapter<ReleaseUserBean.DataBean> mAdapter;
 
     @Override
     protected void initViews() {
         initRefresh();
         initRv();
-
-
     }
 
     private void initRv() {
+        if (mData == null || mData.size() == 0) {
+            toast("暂无需求信息");
+            return;
+        }
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new CommonAdapter<TutorBean>(getActivity(), R.layout.item_main_rv, mData) {
+        mAdapter = new CommonAdapter<ReleaseUserBean.DataBean>(getActivity(), R.layout.item_main_rv, mData) {
             @Override
-            public void setData(ViewHolder holder, TutorBean TutorBean) {
-                holder.setImageResource(R.id.item_main_rv_rv_icon, TutorBean.getImg());
-                holder.setText(R.id.item_main_rv_rv_name, TutorBean.getName());
-                holder.setText(R.id.item_main_rv_rv_type, "教授课程: " + TutorBean.getType());
-                holder.setText(R.id.item_main_rv_rv_summary, TutorBean.getSummary());
+            public void setData(ViewHolder holder, ReleaseUserBean.DataBean data) {
+                if (data.getIcon().equals(""))
+                    holder.setImageResource(R.id.item_main_rv_icon, R.drawable.img_user);
+                else
+                    holder.setImageWithUrl(R.id.item_main_rv_icon, data.getIcon());
+                holder.setText(R.id.item_main_rv_name, data.getDetail().getNickname());
+                holder.setText(R.id.item_main_rv_level, "所需课程:" + data.getDetail().getSubject_id());
+                holder.setText(R.id.item_main_rv_adress, "上课地址:" + data.getDetail().getAddress());
+                holder.setText(R.id.item_main_rv_summary, "创建时间: " +data.getDetail().getCreate_time());
             }
         };
         mAdapter.notifyDataSetChanged();
@@ -62,8 +73,12 @@ public class NeedCenterStudentFragment extends BaseFragment {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
+                ReleaseUserBean.DataBean detail = mData.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("userDetail", detail);
                 startActivity(new Intent(getActivity(), NeedCenterDetailActivity.class)
-                        .putExtra("teacher_name", mData.get(position).getName()));
+                        .putExtras(bundle)
+                );
             }
 
             @Override
@@ -84,8 +99,9 @@ public class NeedCenterStudentFragment extends BaseFragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mData.add(0, new TutorBean(R.drawable.img_user, "张同学", "语文", "新增"));
-                        mAdapter.notifyDataSetChanged();
+//                        mData.add(0, new TutorBean(R.drawable.img_user, "张同学", "语文", "新增"));
+//                        mAdapter.notifyDataSetChanged();
+                        toast("暂无更新");
                         if (mRefreshLayout.isRefreshing()) {
                             mRefreshLayout.setRefreshing(false);
                         }
@@ -103,15 +119,30 @@ public class NeedCenterStudentFragment extends BaseFragment {
 
     @Override
     protected void loadData() {
-        mData = new ArrayList<>();
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "李同学", "数学", "每周san讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "刘同学", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "黄同学", "英语", "you are good"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
+        List<Param> params = new ArrayList<>();
+        params.add(new Param("type", "2"));
+        OkHttpUtils.post(apiServer.URL_NeedCenter_Student, new OkHttpUtils.ResultCallback<ReleaseUserBean>() {
+            @Override
+            public void onSuccess(ReleaseUserBean data) {
+                mData = data.getData();
+
+                initViews();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        }, params);
+//        mData = new ArrayList<>();
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "李同学", "数学", "每周san讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "刘同学", "语文", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "黄同学", "英语", "you are good"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张同学", "语文", "每周一讲"));
     }
 }

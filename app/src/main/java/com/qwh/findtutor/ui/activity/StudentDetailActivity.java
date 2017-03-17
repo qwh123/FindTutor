@@ -1,5 +1,7 @@
 package com.qwh.findtutor.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,7 +15,14 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.qwh.findtutor.R;
+import com.qwh.findtutor.bean.CommonBean;
+import com.qwh.findtutor.bean.Param;
+import com.qwh.findtutor.http.OkHttpUtils;
+import com.qwh.findtutor.http.apiServer;
 import com.qwh.findtutor.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -21,8 +30,6 @@ import butterknife.OnClick;
 
 public class StudentDetailActivity extends AppCompatActivity {
 
-    @Bind(R.id.btn_info_detail_about)
-    Button btnInfoAbout;
     @Bind(R.id.toolbar_info)
     Toolbar toolbar;
 
@@ -32,6 +39,25 @@ public class StudentDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info_detail);
         ButterKnife.bind(this);
         initToolBar();
+getData();
+    }
+
+    private void getData() {
+        List<Param> params=new ArrayList<>();
+        OkHttpUtils.post(apiServer.URL_Get_Student_Detail, new OkHttpUtils.ResultCallback<CommonBean>() {
+            @Override
+            public void onSuccess(CommonBean data) {
+                initView();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        },params);
+    }
+
+    private void initView() {
 
     }
 
@@ -62,20 +88,35 @@ public class StudentDetailActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick({R.id.btn_info_detail_join, R.id.btn_info_detail_about})
+    @OnClick({R.id.btn_info_detail_join, R.id.btn_info_detail_contact})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_info_detail_join:
+//
+                new AlertDialog.Builder(this).setTitle("应用提示")
+                        .setMessage("确认约课?(约课后可在我的课程中查看进度)")
+                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+//网络添加
 
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).show();
+
+                break;
+            case R.id.btn_info_detail_contact:
                 String tel = "18850105250";
                 if (!Utils.judgePhoneNums(tel)) {
                     Toast.makeText(this, "电话号码格式错误", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Utils.ShowCallPhoneDialog(this, tel);
-                break;
-            case R.id.btn_info_detail_about:
-                btnInfoAbout.setText("取消关注");
                 break;
         }
     }

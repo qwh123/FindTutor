@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.qwh.findtutor.R;
+import com.qwh.findtutor.view.LabelView;
 
 /**
  * 作者：chs on 2016/4/29 11:34
@@ -95,6 +97,27 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     public ViewHolder setText(int viewId, String text) {
         TextView tv = getView(viewId);
         tv.setText(text);
+        return this;
+    } /**
+     * 给button赋值
+     *
+     * @param viewId
+     * @param text
+     */
+    public ViewHolder setBtnText(int viewId, String text) {
+        Button tv = getView(viewId);
+        tv.setText(text);
+        return this;
+    }
+    /**
+     * 给LabelView赋值
+     *
+     * @param viewId
+     * @param text
+     */
+    public ViewHolder setTextContent(int viewId, String text) {
+        LabelView tv = getView(viewId);
+        tv.setTextContent(text);
         return this;
     }
 

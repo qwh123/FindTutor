@@ -70,7 +70,6 @@ public class CourseMode {
     public List<String> getFilterChild2() {
         List<String> childList = new ArrayList<>();
         childList = new ArrayList<>();
-        childList.add("全科");
         childList.add("语文");
         childList.add("数学");
         childList.add("英语");
@@ -82,7 +81,6 @@ public class CourseMode {
 
     public List<String> getFilterChild3() {
         List<String> childList = new ArrayList<>();
-        childList.add("全科");
         childList.add("数理化");
         childList.add("中考心理辅导");
         childList.add("语文");
@@ -97,7 +95,6 @@ public class CourseMode {
 
     public List<String> getFilterChild4() {
         List<String> childList = new ArrayList<>();
-        childList.add("全科");
         childList.add("文综");
         childList.add("理综");
         childList.add("数理化");

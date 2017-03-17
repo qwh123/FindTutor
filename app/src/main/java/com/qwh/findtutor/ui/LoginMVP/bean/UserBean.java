@@ -9,40 +9,104 @@ package com.qwh.findtutor.ui.LoginMVP.bean;
  */
 
 public class UserBean {
-    private String Id;
-    private String userName;
-    private String psw;
 
-    public UserBean() {
+    /**
+     * code : 200
+     * summary : login success
+     * data : {"id":"","tel":"","password":"","type":"0","token":"","creat_time":"2017-02-20 23:00:48"}
+     */
+
+    private int code;
+    private String summary;
+    private DataBean data;
+
+    public int getCode() {
+        return code;
     }
 
-    public UserBean(String id, String userName, String psw) {
-        Id = id;
-        this.userName = userName;
-        this.psw = psw;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getId() {
-        return Id;
+    public String getSummary() {
+        return summary;
     }
 
-    public void setId(String id) {
-        Id = id;
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
-    public String getUserName() {
-        return userName;
+    public DataBean getData() {
+        return data;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setData(DataBean data) {
+        this.data = data;
     }
 
-    public String getPsw() {
-        return psw;
-    }
+    public static class DataBean {
+        /**
+         * id :
+         * tel :
+         * password :
+         * type : 0
+         * token :
+         * creat_time : 2017-02-20 23:00:48
+         */
 
-    public void setPsw(String psw) {
-        this.psw = psw;
+        private String id;
+        private String tel;
+        private String password;
+        private String type;
+        private String token;
+        private String creat_time;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getTel() {
+            return tel;
+        }
+
+        public void setTel(String tel) {
+            this.tel = tel;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public String getCreat_time() {
+            return creat_time;
+        }
+
+        public void setCreat_time(String creat_time) {
+            this.creat_time = creat_time;
+        }
     }
 }

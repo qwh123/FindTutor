@@ -1,6 +1,5 @@
 package com.qwh.findtutor.ui.activity;
 
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -11,12 +10,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.qwh.findtutor.R;
 import com.qwh.findtutor.base.BaseActivity;
+import com.qwh.findtutor.bean.Param;
+import com.qwh.findtutor.bean.RegisterBean;
+import com.qwh.findtutor.bean.SharedSaveConstant;
+import com.qwh.findtutor.http.OkHttpUtils;
+import com.qwh.findtutor.http.apiServer;
+import com.qwh.findtutor.utils.PreferenceUtil;
 import com.qwh.findtutor.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -40,10 +47,12 @@ public class RegisterActivity extends BaseActivity {
     @Bind(R.id.btn_register_yzm)
     Button btnYzm;
 
-    String registerType = null;
+    String registerType;
     int i = 30;
     private String account = null;
     private String pwd = null;
+    private boolean isSub = false;//是否发送验证码
+    private ProgressBar mProBar;
 
     @Override
     public int setLayout() {
@@ -56,8 +65,11 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 int rbtnId = radioGroup.getCheckedRadioButtonId();
-                RadioButton rbtn = (RadioButton) findViewById(rbtnId);
-                registerType = rbtn.getText().toString();
+                if (rbtnId == R.id.rbtn_register_teacher) {
+                    registerType = "1";
+                } else {
+                    registerType = "2";
+                }
             }
         });
 
@@ -81,7 +93,7 @@ public class RegisterActivity extends BaseActivity {
 
     @Override
     public void getData() {
-
+        initView();
     }
 
     @OnClick({R.id.btn_register, R.id.iv_register_back, R.id.btn_register_yzm})
@@ -92,15 +104,20 @@ public class RegisterActivity extends BaseActivity {
         String yzm = edtRegisterYzm.getText().toString();
         switch (view.getId()) {
             case R.id.iv_register_back:
-                toLoginActivity();
+                finish();
 
                 break;
             case R.id.btn_register:
                 if (TextUtils.isEmpty(account)
                         || TextUtils.isEmpty(pwd)
                         || TextUtils.isEmpty(configPwd)
-                        || TextUtils.isEmpty(yzm)) {
+                        || TextUtils.isEmpty(yzm)
+                        || TextUtils.isEmpty(registerType)) {
                     toast("所有输入内容均不能为空");
+                    return;
+                }
+                if (!isSub) {
+                    toast("验证码错误");
                     return;
                 }
                 SMSSDK.submitVerificationCode("86", account, yzm);
@@ -117,7 +134,7 @@ public class RegisterActivity extends BaseActivity {
                     return;
                 } // 2. 通过sdk发送短信验证
                 SMSSDK.getVerificationCode("86", account);
-
+                isSub = true;
                 // 3. 把按钮变成不可点击，并且显示倒计时（正在获取）
                 btnYzm.setClickable(false);
                 btnYzm.setText("重新发送(" + i + ")");
@@ -144,16 +161,6 @@ public class RegisterActivity extends BaseActivity {
         }
     }
 
-    private void toLoginActivity() {
-        Intent data = new Intent();
-        if (!TextUtils.isEmpty(account))
-            data.putExtra("account", account);
-        if (!TextUtils.isEmpty(pwd))
-            data.putExtra("pwd", pwd);
-        setResult(200, data);
-        finish();
-    }
-
     /**
      *
      */
@@ -173,16 +180,46 @@ public class RegisterActivity extends BaseActivity {
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     // 短信注册成功后，返回MainActivity,然后提示
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {// 提交验证码成功
-                        toLoginActivity();
+                        toRegister();
+
                     } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                         toast("验证码已经发送");
                     } else {
                         ((Throwable) data).printStackTrace();
+                        if (mProBar != null)
+                            mProBar.setVisibility(View.GONE);
                     }
                 }
             }
         }
     };
+
+    private void toRegister() {
+        List<Param> mList = new ArrayList<>();
+        mList.add(new Param("tel", account));
+        mList.add(new Param("password", pwd));
+        mList.add(new Param("type", registerType));
+        OkHttpUtils.post(apiServer.URL_Register, new OkHttpUtils.ResultCallback<RegisterBean>() {
+            @Override
+            public void onSuccess(RegisterBean response) {
+                toast(response.getSummary());
+                if (response.getCode() == 200) {
+                    PreferenceUtil.commitString(SharedSaveConstant.User_Account, account);
+                    PreferenceUtil.commitString(SharedSaveConstant.User_Pwd, pwd);
+                    PreferenceUtil.commitString(SharedSaveConstant.User_Type, registerType);
+                    finish();
+                }
+                if (mProBar != null)
+                    mProBar.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        }, mList);
+    }
 
 
     /**
@@ -193,7 +230,7 @@ public class RegisterActivity extends BaseActivity {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
-        ProgressBar mProBar = new ProgressBar(this);
+        mProBar = new ProgressBar(this);
         mProBar.setLayoutParams(layoutParams);
         mProBar.setVisibility(View.VISIBLE);
         layout.addView(mProBar);

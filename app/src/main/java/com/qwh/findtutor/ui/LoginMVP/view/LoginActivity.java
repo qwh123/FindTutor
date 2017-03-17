@@ -11,10 +11,12 @@ import android.widget.RadioGroup;
 
 import com.qwh.findtutor.R;
 import com.qwh.findtutor.base.BaseActivity;
+import com.qwh.findtutor.bean.SharedSaveConstant;
 import com.qwh.findtutor.ui.LoginMVP.LoginContract;
 import com.qwh.findtutor.ui.LoginMVP.presenter.UserPresenter;
 import com.qwh.findtutor.ui.MainActivity;
 import com.qwh.findtutor.ui.activity.RegisterActivity;
+import com.qwh.findtutor.utils.PreferenceUtil;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -28,9 +30,13 @@ public class LoginActivity extends BaseActivity implements LoginContract.IUserVi
     EditText edtLoginPwd;
     @Bind(R.id.radiogroup_login)
     RadioGroup radioGroup;
+    @Bind(R.id.rbtn_login_teacher)
+    RadioButton rbtnTeacher;
+    @Bind(R.id.rbtn_login_student)
+    RadioButton rbtnStudent;
     @Bind(R.id.login_progress)
     ProgressBar loginProgress;
-    String type = null;
+    String type;
 
     private UserPresenter presenter;
 
@@ -44,19 +50,23 @@ public class LoginActivity extends BaseActivity implements LoginContract.IUserVi
     public void initView() {
 
         presenter = new UserPresenter(LoginActivity.this);
+        presenter.AutoFillEdt();
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 int rbtnId = radioGroup.getCheckedRadioButtonId();
-                RadioButton rbtn = (RadioButton) findViewById(rbtnId);
-                type = rbtn.getText().toString();
+                if (rbtnId == R.id.rbtn_login_teacher) {
+                    type = "1";
+                } else {
+                    type = "2";
+                }
             }
         });
     }
 
     @Override
     public void getData() {
-
+        initView();
     }
 
     @Override
@@ -98,27 +108,23 @@ public class LoginActivity extends BaseActivity implements LoginContract.IUserVi
     @Override
     public void toIntentRegister() {
         Intent intent = new Intent(this, RegisterActivity.class);
-        startActivityForResult(intent, 100);
+        startActivity(intent);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            try {
-                String account = data.getExtras().getString("account");
-                String pwd = data.getExtras().getString("pwd");
-                setAccountText(account);
-                setPwdText(pwd);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     @Override
     public void setAccountText(String text) {
         edtLoginAccount.setText(text);
+    }
+
+    @Override
+    public void setLoginType(String type) {
+        if (!type.isEmpty())
+            if (type.equals("1")) {
+                rbtnTeacher.setChecked(true);
+            } else
+                rbtnStudent.setChecked(true);
+
     }
 
     @Override
@@ -131,7 +137,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.IUserVi
         return type;
     }
 
-    @OnClick({R.id.btn_login, R.id.btn_register})
+    @OnClick({R.id.btn_login, R.id.btn_login_register, R.id.iv_login_back})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
@@ -139,8 +145,11 @@ public class LoginActivity extends BaseActivity implements LoginContract.IUserVi
                 inputMeMana.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 presenter.login(edtLoginAccount.getText().toString(), edtLoginPwd.getText().toString(), type);
                 break;
-            case R.id.btn_register:
+            case R.id.btn_login_register:
                 presenter.toRegister();
+                break;
+            case R.id.iv_login_back:
+                finish();
                 break;
         }
     }

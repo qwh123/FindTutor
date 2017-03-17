@@ -19,12 +19,20 @@ import com.qwh.findtutor.R;
 import com.qwh.findtutor.base.utils.CommonAdapter;
 import com.qwh.findtutor.base.utils.OnItemClickListener;
 import com.qwh.findtutor.base.utils.ViewHolder;
+import com.qwh.findtutor.bean.CommonBean;
+import com.qwh.findtutor.bean.Param;
+import com.qwh.findtutor.bean.SearchResultBean;
+import com.qwh.findtutor.bean.SharedSaveConstant;
 import com.qwh.findtutor.bean.test.TutorBean;
+import com.qwh.findtutor.http.OkHttpUtils;
+import com.qwh.findtutor.http.apiServer;
+import com.qwh.findtutor.utils.PreferenceUtil;
 import com.qwh.findtutor.utils.SpacesItemDecoration;
 import com.qwh.findtutor.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -40,9 +48,8 @@ public class SearchActivity extends Activity {
     Button btnSearch;
     @Bind(R.id.rv_search)
     RecyclerView rvSearch;
-    private List<TutorBean> mData = new ArrayList<>();
-    private List<TutorBean> mData1 = new ArrayList<>();
-    private CommonAdapter<TutorBean> mAdapter;
+    private List<SearchResultBean.DataBean> mData = new ArrayList<>();
+    private CommonAdapter<SearchResultBean.DataBean> mAdapter;
 
 
     @Override
@@ -50,12 +57,11 @@ public class SearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
-        initView();
-        initData();
+
     }
 
-    private void initView() {
 
+    private void initView() {
         edtSearchContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -81,24 +87,28 @@ public class SearchActivity extends Activity {
         });
 
         rvSearch.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new CommonAdapter<TutorBean>(this, R.layout.item_main_rv, mData1) {
+        SpacesItemDecoration decoration = new SpacesItemDecoration(8);
+        rvSearch.addItemDecoration(decoration);
+        mAdapter = new CommonAdapter<SearchResultBean.DataBean>(this, R.layout.item_main_rv, mData) {
             @Override
-            public void setData(ViewHolder holder, TutorBean TutorBean) {
-                holder.setImageResource(R.id.item_main_rv_rv_icon, TutorBean.getImg());
-                holder.setText(R.id.item_main_rv_rv_name, TutorBean.getName());
-                holder.setText(R.id.item_main_rv_rv_type, "教授课程: " + TutorBean.getType());
-                holder.setText(R.id.item_main_rv_rv_summary, TutorBean.getSummary());
+            public void setData(ViewHolder holder, SearchResultBean.DataBean data) {
+                holder.setImageWithUrl(R.id.item_main_rv_icon, data.getIcon());
+                holder.setText(R.id.item_main_rv_name, data.getNickname());
+                holder.setText(R.id.item_main_rv_level, data.getEducation_bg());
+                holder.setText(R.id.item_main_rv_adress, data.getAddress());
+//                holder.setText(R.id.item_main_rv_summary, data.get());
             }
         };
-        mAdapter.notifyDataSetChanged();
         rvSearch.setAdapter(mAdapter);
-        SpacesItemDecoration decoration = new SpacesItemDecoration(10);
-        rvSearch.addItemDecoration(decoration);
+        mAdapter.notifyDataSetChanged();
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
                 startActivity(new Intent(SearchActivity.this, TeacherDetailActivity.class)
-                        .putExtra("teacher_name", mData1.get(position).getName()));
+                        .putExtra("teacher_name", mData.get(position).getNickname())
+                        .putExtra("id", mData.get(position).getId())
+
+                );
             }
 
             @Override
@@ -120,13 +130,10 @@ public class SearchActivity extends Activity {
             case R.id.btn_search:
                 Utils.hideSoftInput(edtSearchContent, this);
                 if (btnSearch.getText().toString().equals(getString(R.string.search_confirm))) {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    getData(edtSearchContent.getText().toString().trim());
-                    mAdapter.notifyDataSetChanged();
+
+                    initData(edtSearchContent.getText().toString().trim());
+//                    getData(edtSearchContent.getText().toString().trim());
+
                     edtSearchContent.setText("");
                 } else {
                     finish();
@@ -137,37 +144,38 @@ public class SearchActivity extends Activity {
     }
 
 
-    public void initData() {
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "英语", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "英语", "每周san讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "数学", "每周san讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "刘老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "丘老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "丘老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "黄老师", "数学", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "黄老师", "英语", "you are hahah"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "黄老师", "英语", "you are good"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "黄老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "数学", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "黄老师", "数学", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "测试"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "其他", "测试测试"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "其他", "测试测试测试"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "其他", "每周测试测试一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "其他", "每周测试一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "其他", "测试测试测试"));
+    public void initData(String content) {
+        List<Param> params = new ArrayList<>();
+        if (TextUtils.isEmpty(content))
+            return;
+        if (isNumeric(content) && Utils.judgePhoneNums(content))
+            params.add(new Param("tel", content));
+        else
+            params.add(new Param("nickname", content));
+        OkHttpUtils.post(apiServer.URL_Search, new OkHttpUtils.ResultCallback<SearchResultBean>() {
+            @Override
+            public void onSuccess(SearchResultBean data) {
+                mData = data.getData();
+                if (mData != null && mData.size() > 0)
+                    initView();
+                else {
+                    Toast.makeText(SearchActivity.this, "未找到相关信息", Toast.LENGTH_SHORT).show();
+                }
+//                mData1=data.get
+//                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        }, params);
 
     }
 
-    public void getData(String searchContent) {
-        mData1.clear();
-        for (TutorBean bean : mData) {
-            if (bean.getName().contains(searchContent))
-                mData1.add(bean);
-        }
-        if (mData1.size() < 1)
-            Toast.makeText(this, "数据为空", Toast.LENGTH_SHORT).show();
+
+    private boolean isNumeric(String str) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        return pattern.matcher(str).matches();
     }
 }

@@ -25,6 +25,7 @@
     <string name="update">更   新</string>
     <string name="publish">发   布</string>
     <string name="comment">评   论</string>
+    <string name="network_anomalies">网络异常</string>
     <string name="please_input_newpwd">新密码</string>
     <string name="please_input_yzm">验证码</string>
     <string name="please_input_confirm_pwd">确认密码</string>

@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
 import com.qwh.findtutor.R;
+import com.qwh.findtutor.bean.SharedSaveConstant;
+import com.qwh.findtutor.ui.LoginMVP.view.LoginActivity;
+import com.qwh.findtutor.utils.PreferenceUtil;
 
 public class SplashActivity extends Activity {
     private Handler mHandler = new Handler();
@@ -35,8 +39,10 @@ public class SplashActivity extends Activity {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-//                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                        if (!TextUtils.isEmpty(PreferenceUtil.getString(SharedSaveConstant.User_Account, ""))) {
+                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                        } else
+                            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                         finish();
                     }
                 }, 1000);

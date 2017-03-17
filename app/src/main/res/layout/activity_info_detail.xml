@@ -71,7 +71,15 @@
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:layout_gravity="bottom">
-
+        <Button
+            android:id="@+id/btn_info_detail_contact"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_orange_dark"
+            android:text="联系Ta"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
         <Button
             android:id="@+id/btn_info_detail_join"
             android:layout_width="0dp"
@@ -82,15 +90,7 @@
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
-        <Button
-            android:id="@+id/btn_info_detail_about"
-            android:layout_width="0dp"
-            android:layout_height="44dp"
-            android:layout_weight="1"
-            android:background="@android:color/holo_orange_dark"
-            android:text="关注"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
+
 
     </LinearLayout>
 
