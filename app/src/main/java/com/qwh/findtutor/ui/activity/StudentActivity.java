@@ -82,9 +82,10 @@ public class StudentActivity extends BaseActivity {
         OkHttpUtils.post(apiServer.URL_Get_Student, new OkHttpUtils.ResultCallback<AllUserBean>() {
             @Override
             public void onSuccess(AllUserBean data) {
-
-                mStudentBeen = data.getData().getUser();
-                initView();
+                if (data.getCode() == 200) {
+                    mStudentBeen = data.getData().getUser();
+                    initView();
+                }
             }
 
             @Override

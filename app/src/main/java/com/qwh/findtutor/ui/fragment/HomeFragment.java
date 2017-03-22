@@ -107,12 +107,12 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initBanner() {
-//        for (IHomeBean.DataBean.BannerBean bean : mBanner) {
-//            images.add(bean.getIcon());
-//        }
-        images.add("http://img.zcool.cn/community/01ae5656e1427f6ac72531cb72bac5.jpg");
-        images.add("http://img.zcool.cn/community/018fdb56e1428632f875520f7b67cb.jpg");
-        images.add("http://img.zcool.cn/community/01c8dc56e1428e6ac72531cbaa5f2c.jpg");
+        for (IHomeBean.DataBean.BannerBean bean : mBanner) {
+            images.add(bean.getIcon());
+        }
+//        images.add("http://img.zcool.cn/community/01ae5656e1427f6ac72531cb72bac5.jpg");
+//        images.add("http://img.zcool.cn/community/018fdb56e1428632f875520f7b67cb.jpg");
+//        images.add("http://img.zcool.cn/community/01c8dc56e1428e6ac72531cbaa5f2c.jpg");
         banner.setBannerStyle(Banner.NUM_INDICATOR_TITLE);
         banner.setIndicatorGravity(Banner.CENTER);
         banner.setDelayTime(5000);//设置轮播间隔时间

@@ -98,7 +98,9 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv = getView(viewId);
         tv.setText(text);
         return this;
-    } /**
+    }
+
+    /**
      * 给button赋值
      *
      * @param viewId
@@ -109,6 +111,17 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         tv.setText(text);
         return this;
     }
+
+    /**
+     * @param viewId
+     * @param boo
+     */
+    public ViewHolder setBtnEnable(int viewId, boolean boo) {
+        Button tv = getView(viewId);
+        tv.setEnabled(boo);
+        return this;
+    }
+
     /**
      * 给LabelView赋值
      *
@@ -136,6 +149,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
                 .into(view);
         return this;
     }
+
     public ViewHolder setRoundImageWithUrl(int viewId, String url) {
         ImageView view = getView(viewId);
         Glide.with(mContext)

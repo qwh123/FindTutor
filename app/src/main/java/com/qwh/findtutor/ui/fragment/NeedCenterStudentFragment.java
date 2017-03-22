@@ -63,7 +63,7 @@ public class NeedCenterStudentFragment extends BaseFragment {
                 holder.setText(R.id.item_main_rv_name, data.getDetail().getNickname());
                 holder.setText(R.id.item_main_rv_level, "所需课程:" + data.getDetail().getSubject_id());
                 holder.setText(R.id.item_main_rv_adress, "上课地址:" + data.getDetail().getAddress());
-                holder.setText(R.id.item_main_rv_summary, "创建时间: " +data.getDetail().getCreate_time());
+                holder.setText(R.id.item_main_rv_summary, "创建时间: " + data.getDetail().getCreate_time());
             }
         };
         mAdapter.notifyDataSetChanged();
@@ -73,7 +73,7 @@ public class NeedCenterStudentFragment extends BaseFragment {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
-                ReleaseUserBean.DataBean detail = mData.get(position);
+                ReleaseUserBean.DataBean.DetailBean detail = mData.get(position).getDetail();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("userDetail", detail);
                 startActivity(new Intent(getActivity(), NeedCenterDetailActivity.class)
@@ -96,17 +96,10 @@ public class NeedCenterStudentFragment extends BaseFragment {
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-//                        mData.add(0, new TutorBean(R.drawable.img_user, "张同学", "语文", "新增"));
-//                        mAdapter.notifyDataSetChanged();
-                        toast("暂无更新");
-                        if (mRefreshLayout.isRefreshing()) {
-                            mRefreshLayout.setRefreshing(false);
-                        }
-                    }
-                }, 3000);
+                if (mData != null)
+                    mData.clear();
+                loadData();
+
 
             }
         });
@@ -124,14 +117,20 @@ public class NeedCenterStudentFragment extends BaseFragment {
         OkHttpUtils.post(apiServer.URL_NeedCenter_Student, new OkHttpUtils.ResultCallback<ReleaseUserBean>() {
             @Override
             public void onSuccess(ReleaseUserBean data) {
-                mData = data.getData();
-
-                initViews();
+                if (data.getCode() == 200) {
+                    mData = data.getData();
+                    initViews();
+                }
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.setRefreshing(false);
+                }
             }
 
             @Override
             public void onFailure(Exception e) {
-
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.setRefreshing(false);
+                }
             }
         }, params);
 //        mData = new ArrayList<>();

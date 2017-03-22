@@ -185,7 +185,7 @@ public class RegisterActivity extends BaseActivity {
                     } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                         toast("验证码已经发送");
                     } else {
-                        ((Throwable) data).printStackTrace();
+                        toast("验证码不一致");
                         if (mProBar != null)
                             mProBar.setVisibility(View.GONE);
                     }

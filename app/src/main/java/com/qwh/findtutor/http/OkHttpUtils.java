@@ -9,11 +9,13 @@ import com.qwh.findtutor.bean.Param;
 import com.qwh.findtutor.utils.JsonUtils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -112,10 +114,13 @@ public class OkHttpUtils {
             @Override
             public void onFailure(Request request, final IOException e) {
                 sendFailCallback(callback, e);
+
+                Log.i(TAG, "onFailure: "+request.toString());
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
+                Log.i(TAG, "onResponse: "+response.message());
                 try {
                     String str = response.body().string();
                     if (callback.mType == String.class) {
@@ -243,5 +248,24 @@ public class OkHttpUtils {
         public abstract void onFailure(Exception e);
     }
 
+
+    public String put(MediaType mediaType, String uploadUrl, String localPath) throws IOException {
+        File file = new File(localPath);
+        RequestBody body = RequestBody.create(mediaType, file);
+        Request request = new Request.Builder()
+                .url(uploadUrl)
+                .put(body)
+                .build();
+
+//        Response response = mOkHttpClient.newCall(request).execute();
+        Response response = mOkHttpClient.newCall(request).execute();
+        return response.code() + ":" + response.body().string();
+    }
+
+    //上传JPG图片
+    public static String putImg(String uploadUrl, String localPath) throws IOException {
+        MediaType Image = MediaType.parse("image/jpeg; charset=utf-8");
+        return getInstance().put(Image, uploadUrl, localPath);
+    }
 
 }

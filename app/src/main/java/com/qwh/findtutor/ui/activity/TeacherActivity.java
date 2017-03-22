@@ -120,13 +120,13 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
         if (position != 2) {
             dropDownMenu.setPositionIndicatorText(FilterUrl.instance().position, FilterUrl.instance().positionTitle);
         }
-
+        Log.i("teacheractivity", "onFilterDone: position:"+FilterUrl.instance().position);
+        Log.i("teacheractivity", "onFilterDone: positionTitle:"+FilterUrl.instance().positionTitle);
         dropDownMenu.close();
         Log.i("dropdown:", "youchoose:==>" + FilterUrl.instance().toString());
-//        initData(null, null, FilterUrl.instance().positionTitle);
-        getData(FilterUrl.instance().getChoose());
+        initData(null, null, FilterUrl.instance().positionTitle);
+//        getData(FilterUrl.instance().getChoose());
         FilterUrl.instance().clear();
-        mAdapter.notifyDataSetChanged();
 //        mFilterContentView.setText(FilterUrl.instance().toString());
     }
 

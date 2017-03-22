@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.qwh.findtutor.R;
 import com.qwh.findtutor.base.BaseFragment;
@@ -19,13 +21,17 @@ import com.qwh.findtutor.base.utils.CommonAdapter;
 import com.qwh.findtutor.base.utils.OnItemClickListener;
 import com.qwh.findtutor.base.utils.ViewHolder;
 import com.qwh.findtutor.bean.CommonBean;
+import com.qwh.findtutor.bean.MyClassBean;
 import com.qwh.findtutor.bean.Param;
+import com.qwh.findtutor.bean.SharedSaveConstant;
 import com.qwh.findtutor.bean.test.TutorBean;
 import com.qwh.findtutor.http.OkHttpUtils;
 import com.qwh.findtutor.http.apiServer;
 import com.qwh.findtutor.ui.activity.CommentActivity;
 import com.qwh.findtutor.ui.activity.NeedCenterDetailActivity;
+import com.qwh.findtutor.ui.activity.TeacherDetailActivity;
 import com.qwh.findtutor.ui.activity.UserCourseActivity;
+import com.qwh.findtutor.utils.PreferenceUtil;
 import com.qwh.findtutor.utils.SpacesItemDecoration;
 
 import java.util.ArrayList;
@@ -40,8 +46,8 @@ public class UserCourseFragment extends BaseFragment {
     @Bind(R.id.recyclerView_user_course_ing)
     RecyclerView recyclerView;
 
-    private List<TutorBean> mData;
-    private CommonAdapter<TutorBean> mAdapter;
+    private List<MyClassBean.DataBean.OrderBean> mData = new ArrayList<>();
+    private CommonAdapter<MyClassBean.DataBean.OrderBean> mAdapter;
     private int mPage;
 
 
@@ -52,34 +58,29 @@ public class UserCourseFragment extends BaseFragment {
 
     @Override
     protected void initViews() {
-        //  loadData();
-        if (mData != null && mData.size() > 0)
-            initCourseData(mData);
-
-    }
-
-    private void initCourseData(List<TutorBean> mData) {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new CommonAdapter<TutorBean>(getActivity(), R.layout.item_user_course, mData) {
+        mAdapter = new CommonAdapter<MyClassBean.DataBean.OrderBean>(getActivity(), R.layout.item_user_course, mData) {
             @Override
-            public void setData(ViewHolder holder, TutorBean tutorBean) {
+            public void setData(ViewHolder holder, final MyClassBean.DataBean.OrderBean bean) {
+                MyClassBean.DataBean.OrderBean.UserInfoBean user = bean.getUser_info();
                 holder.setVisible(R.id.labelView_course, false);
                 holder.setBtnText(R.id.item_main_btn_comment, "评价");
                 holder.setOnClickListener(R.id.item_main_btn_comment, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        if(){
-//                            toast("你已经评价过了");
-//                            return;
-//                        }
-                        startActivity(new Intent(getActivity(), CommentActivity.class));
+                        startActivity(new Intent(getActivity(), CommentActivity.class)
+                                .putExtra("user_id", bean.getUser_info().getId()));
                     }
                 });
-                holder.setImageResource(R.id.item_user_course_icon, tutorBean.getImg());
-                holder.setText(R.id.item_user_course_name, tutorBean.getName());
-                holder.setText(R.id.item_user_course_type, "教授课程: " + tutorBean.getType());
-                holder.setText(R.id.item_user_course_summary, tutorBean.getSummary());
+                if (user.getIcon().equals(""))
+                    holder.setImageResource(R.id.item_user_course_icon, R.drawable.img_user);
+                else
+                    holder.setImageWithUrl(R.id.item_user_course_icon, user.getIcon());
+                holder.setText(R.id.item_user_course_name, user.getNickname());
+                holder.setVisible(R.id.item_user_course_level, false);
+                holder.setText(R.id.item_user_course_type, "所在地址: " + user.getAddress());
+                holder.setText(R.id.item_user_course_summary, "备注：" + user.getDetail());
             }
         };
         mAdapter.notifyDataSetChanged();
@@ -89,8 +90,10 @@ public class UserCourseFragment extends BaseFragment {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
-                startActivity(new Intent(getActivity(), NeedCenterDetailActivity.class)
-                        .putExtra("teacher_name", UserCourseFragment.this.mData.get(position).getName()));
+                startActivity(new Intent(getActivity(), TeacherDetailActivity.class)
+                        .putExtra("teacher_name", mData.get(position).getUser_info().getNickname())
+                        .putExtra("id", mData.get(position).getUser_info().getId())
+                );
             }
 
             @Override
@@ -100,56 +103,48 @@ public class UserCourseFragment extends BaseFragment {
         });
     }
 
-    /**
-     * 展示结束课程
-     */
-    private void showOverDialog() {
-        new AlertDialog.Builder(getActivity())
-                .setMessage("应用提示")
-                .setMessage("确认课程以结束?")
-                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//TODO
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
-    }
-
 
     @Override
     protected void loadData() {
-        List<Param> params=new ArrayList<>();
-        OkHttpUtils.post(apiServer.URL_User_Course, new OkHttpUtils.ResultCallback<CommonBean>() {
+
+        List<Param> params = new ArrayList<>();
+        params.add(new Param("id", PreferenceUtil.getString(SharedSaveConstant.User_Id, "")));
+        OkHttpUtils.post(apiServer.URL_User_Course, new OkHttpUtils.ResultCallback<MyClassBean>() {
             @Override
-            public void onSuccess(CommonBean data) {
-
-
+            public void onSuccess(MyClassBean data) {
+                Log.i("usercourseFragment", "onSuccess: ");
+                if (data.getCode() == 200 && data.getData() != null) {
+                    Log.i("myClass", "onSuccess: " + data.getData().get(0).getId());
+                    for (MyClassBean.DataBean da : data.getData()) {
+                        for (MyClassBean.DataBean.OrderBean bean : da.getOrder()) {
+                            if (bean.getState().equals("5"))
+                                mData.add(bean);
+                        }
+                    }
+                    if (mData.size() > 0) {
+                        initViews();
+                    }
+                } else {
+                }
             }
 
             @Override
             public void onFailure(Exception e) {
 
             }
-        },params);
+        }, params);
 
 
-        mData = new ArrayList<>();
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "李老师", "数学", "每周san讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "刘老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "黄老师", "英语", "you are good"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "英语", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "英语", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "每周一讲"));
-        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "每周一讲"));
-        initViews();
+//        mData = new ArrayList<>();
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "李老师", "数学", "每周san讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "刘老师", "语文", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "黄老师", "英语", "you are good"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "英语", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "英语", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "每周一讲"));
+//        mData.add(new TutorBean(R.mipmap.ic_launcher, "张老师", "语文", "每周一讲"));
     }
 
 }

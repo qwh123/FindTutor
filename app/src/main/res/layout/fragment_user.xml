@@ -103,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="16dp"
-                    android:text="我的课程"
+                    android:text="课程中心"
                     android:textColor="@android:color/secondary_text_light"
                     android:textSize="18sp" />
 

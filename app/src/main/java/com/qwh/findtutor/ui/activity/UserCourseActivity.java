@@ -50,7 +50,7 @@ public class UserCourseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         initToolerBar();
         initView();
-//        initTabLayoutAndViewPager();
+        initTabLayoutAndViewPager();
     }
 
     private void initToolerBar() {
@@ -76,7 +76,7 @@ public class UserCourseActivity extends AppCompatActivity {
         }
 
 //模拟数据
-        loadData();
+//        loadData();
     }
 
     private void loadData() {

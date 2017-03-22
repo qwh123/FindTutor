@@ -13,8 +13,10 @@ import com.qwh.findtutor.R;
 import com.qwh.findtutor.base.BaseActivity;
 import com.qwh.findtutor.bean.CommentBean;
 import com.qwh.findtutor.bean.Param;
+import com.qwh.findtutor.bean.SharedSaveConstant;
 import com.qwh.findtutor.http.OkHttpUtils;
 import com.qwh.findtutor.http.apiServer;
+import com.qwh.findtutor.utils.PreferenceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +38,11 @@ public class CommentActivity extends BaseActivity {
     @Bind(R.id.btn_comment)
     Button btnComment;
 
-    String ratingLevel = "5分";
-    String ratingAttitube = "5分";
-    String ratingSkill = "5分";
+    String ratingLevel = "5";
+    String ratingAttitube = "5";
+    String ratingSkill = "5";
     String strComment = null;
+    String user_id = null;
 
     @Override
     public int setLayout() {
@@ -52,21 +55,18 @@ public class CommentActivity extends BaseActivity {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 ratingLevel = String.valueOf(rating);
-                toast(ratingLevel);
             }
         });
         ratingbarCommentAttibute.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 ratingAttitube = String.valueOf(rating);
-                toast(ratingAttitube);
             }
         });
         ratingbarCommentSkill.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 ratingSkill = String.valueOf(rating);
-                toast(ratingSkill);
             }
         });
 
@@ -74,20 +74,11 @@ public class CommentActivity extends BaseActivity {
 
     @Override
     public void getData() {
-        List<Param> params = new ArrayList<>();
-        OkHttpUtils.post(apiServer.URL_Stu_Comment, new OkHttpUtils.ResultCallback<CommentBean>() {
-            @Override
-            public void onSuccess(CommentBean data) {
-                initView();
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-
-            }
-        }, params);
+        user_id = getIntent().getStringExtra("user_id");
+        initView();
 
     }
+
 
     @OnClick({R.id.iv_comment_back, R.id.btn_comment})
     public void onClick(View view) {
@@ -109,10 +100,19 @@ public class CommentActivity extends BaseActivity {
     //提交评论
     private void SubComment() {
         List<Param> params = new ArrayList<>();
+        params.add(new Param("id", PreferenceUtil.getString(SharedSaveConstant.User_Id, "")));
+        params.add(new Param("user_id", user_id));
+        params.add(new Param("education_bg", ratingLevel));
+        params.add(new Param("attitude", ratingAttitube));
+        params.add(new Param("skills", ratingSkill));
+        params.add(new Param("comments", strComment));
+
         OkHttpUtils.post(apiServer.URL_Stu_Sub_Comment, new OkHttpUtils.ResultCallback<CommentBean>() {
             @Override
             public void onSuccess(CommentBean data) {
-
+                toast(data.getSummary());
+                if (data.getCode() == 200)
+                    finish();
             }
 
             @Override

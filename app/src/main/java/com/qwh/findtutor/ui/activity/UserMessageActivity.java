@@ -1,54 +1,43 @@
 package com.qwh.findtutor.ui.activity;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.qwh.findtutor.R;
 import com.qwh.findtutor.base.BaseActivity;
-import com.qwh.findtutor.bean.AdressBean;
 import com.qwh.findtutor.bean.CommonBean;
 import com.qwh.findtutor.bean.Param;
 import com.qwh.findtutor.bean.SharedSaveConstant;
 import com.qwh.findtutor.bean.UserInfoBean;
 import com.qwh.findtutor.http.OkHttpUtils;
 import com.qwh.findtutor.http.apiServer;
-import com.qwh.findtutor.http.httpUtil;
 import com.qwh.findtutor.utils.FileUtil;
 import com.qwh.findtutor.utils.PreferenceUtil;
 import com.qwh.findtutor.utils.UploadUtil;
 import com.qwh.findtutor.utils.Utils;
 import com.qwh.findtutor.view.AvatarImageView;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.RequestBody;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -112,17 +101,17 @@ public class UserMessageActivity extends BaseActivity {
     @Override
     public void initView() {
 
-        Glide.with(this)
-                .load(user.getIcon())
-                .asBitmap()
-                .centerCrop()
-                .error(R.drawable.img_user)
-                .into(new BitmapImageViewTarget(ivUserMessageHead) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        ivUserMessageHead.setImageBitmap(resource);
-                    }
-                });
+//        Glide.with(this)
+//                .load(user.getIcon())
+//                .asBitmap()
+//                .centerCrop()
+//                .error(R.drawable.img_user)
+//                .into(new BitmapImageViewTarget(ivUserMessageHead) {
+//                    @Override
+//                    protected void setResource(Bitmap resource) {
+//                        ivUserMessageHead.setImageBitmap(resource);
+//                    }
+//                });
 
         tvUserMessageAccount.setText(PreferenceUtil.getString(SharedSaveConstant.User_Account, ""));
         edtUserMessageNickname.setText(user.getNickname());
@@ -166,13 +155,46 @@ public class UserMessageActivity extends BaseActivity {
             @Override
             public void afterCrop(Bitmap photo) {
                 urlpath = FileUtil.saveFile(UserMessageActivity.this, IMAGE_FILE_NAME, photo);
-                isChangeHead = true;
-                UploadUtil uploadUtil = UploadUtil.getInstance();
-                Map<String, String> params = new HashMap<String, String>();
+                AsyncHttpClient client = new AsyncHttpClient();
+                RequestParams params = new RequestParams();
+                //client.ENCODING_GZIP
                 params.put("id", PreferenceUtil.getString(SharedSaveConstant.User_Id, ""));
-                params.put("icon", urlpath);
-                uploadUtil.uploadFile(urlpath, "img", apiServer.URL_User_Message_Update, params);
-                Log.i("img_result", "afterCrop:==> 设置头像成功path：" + urlpath);
+                //添加文件
+                try {
+                    File f = new File(urlpath);
+                    if (f.exists()) {
+                        Log.i("AsyncHttp", "Yes");
+                        params.put("icon", f);
+                    } else {
+                        Log.i("AsyncHttp", "No");
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Log.i("AsyncHttp", "afterCrop: "+params.toString());
+                 /*//////////////
+		         * /把文件上传*/
+                client.post(apiServer.URL_User_Message_Update_ICON, params, new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int i, org.apache.http.Header[] headers, byte[] bytes) {
+                        try {
+                            //获取返回内容
+                            String resp = new String(bytes, "utf-8");
+                            Log.i("AsyncHttp", resp);
+                            //在这里处理返回的内容，例如解析json什么的...
+
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int i, org.apache.http.Header[] headers, byte[] bytes, Throwable throwable) {
+                        //在这里处理连接失败的处理...
+                        Log.i("AsyncHttp", "onFailure: ");
+                    }
+                });
+
             }
         });
         userMessageSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

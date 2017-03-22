@@ -59,18 +59,10 @@ public class NeedCenterTeacherFragment extends BaseFragment {
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-//                        mList.add(0, new InfoBean(1, R.mipmap.ic_launcher, "小丘", "语文", "2010-10-01 10:00-2010-10-01 12:00",
-//                                "128.00", "福建省福州市仓山区上渡街王府井001", "这是添加数据", "甲级", 1));
-                        toast("暂无更新");
-                        mAdapter.notifyDataSetChanged();
-                        if (mRefreshLayout.isRefreshing()) {
-                            mRefreshLayout.setRefreshing(false);
-                        }
-                    }
-                }, 3000);
+                if (mList != null)
+                    mList.clear();
+                loadData();
+
 
             }
         });
@@ -103,7 +95,7 @@ public class NeedCenterTeacherFragment extends BaseFragment {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
-                ReleaseUserBean.DataBean detail = mList.get(position);
+                ReleaseUserBean.DataBean.DetailBean detail = mList.get(position).getDetail();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("userDetail", detail);
                 startActivity(new Intent(getActivity(), NeedCenterDetailActivity.class)
@@ -126,14 +118,21 @@ public class NeedCenterTeacherFragment extends BaseFragment {
         OkHttpUtils.post(apiServer.URL_NeedCenter_Student, new OkHttpUtils.ResultCallback<ReleaseUserBean>() {
             @Override
             public void onSuccess(ReleaseUserBean data) {
-                mList = data.getData();
+                if (data.getCode() == 200) {
+                    mList = data.getData();
+                    initViews();
+                }
 
-                initViews();
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.setRefreshing(false);
+                }
             }
 
             @Override
             public void onFailure(Exception e) {
-
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.setRefreshing(false);
+                }
             }
         }, params);
 //        mList = new ArrayList<>();

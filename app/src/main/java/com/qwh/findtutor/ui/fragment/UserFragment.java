@@ -43,8 +43,6 @@ public class UserFragment extends Fragment {
 //    TextView ivUserName;
     @Bind(R.id.btn_user_login)
     Button btnLogin;
-    @Bind(R.id.tv_user_course)
-    TextView tvCourse;
 
     public UserFragment() {
         // Required empty public constructor
@@ -69,10 +67,6 @@ public class UserFragment extends Fragment {
         } else {
             btnLogin.setText("退出帐号");
         }
-        if (PreferenceUtil.getString(SharedSaveConstant.User_Type, "").equals("1")) {
-            tvCourse.setText("我的学员");
-        } else
-            tvCourse.setText("我的教员");
     }
 
     @Override
