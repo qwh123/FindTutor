@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,7 +43,7 @@ public class CommentActivity extends BaseActivity {
     String ratingAttitube = "5";
     String ratingSkill = "5";
     String strComment = null;
-    String user_id = null;
+    String order_id = null;
 
     @Override
     public int setLayout() {
@@ -74,7 +75,7 @@ public class CommentActivity extends BaseActivity {
 
     @Override
     public void getData() {
-        user_id = getIntent().getStringExtra("user_id");
+        order_id = getIntent().getStringExtra("order_id");
         initView();
 
     }
@@ -100,13 +101,13 @@ public class CommentActivity extends BaseActivity {
     //提交评论
     private void SubComment() {
         List<Param> params = new ArrayList<>();
-        params.add(new Param("id", PreferenceUtil.getString(SharedSaveConstant.User_Id, "")));
-        params.add(new Param("user_id", user_id));
+//        params.add(new Param("id", PreferenceUtil.getString(SharedSaveConstant.User_Id, "")));
+        params.add(new Param("order_id", order_id));
         params.add(new Param("education_bg", ratingLevel));
         params.add(new Param("attitude", ratingAttitube));
         params.add(new Param("skills", ratingSkill));
         params.add(new Param("comments", strComment));
-
+        Log.i("order_id", "order_id: "+order_id);
         OkHttpUtils.post(apiServer.URL_Stu_Sub_Comment, new OkHttpUtils.ResultCallback<CommentBean>() {
             @Override
             public void onSuccess(CommentBean data) {

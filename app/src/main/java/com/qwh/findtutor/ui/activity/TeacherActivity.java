@@ -50,6 +50,10 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
     private List<AllUserBean.DataBean.UserBean> mData1 = new ArrayList<>();
     private CommonAdapter<AllUserBean.DataBean.UserBean> mAdapter;
 
+    private String fil_sex = null;
+    private String fil_adress = null;
+    private String fil_subject = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,31 +124,24 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
         if (position != 2) {
             dropDownMenu.setPositionIndicatorText(FilterUrl.instance().position, FilterUrl.instance().positionTitle);
         }
-        Log.i("teacheractivity", "onFilterDone: position:"+FilterUrl.instance().position);
-        Log.i("teacheractivity", "onFilterDone: positionTitle:"+FilterUrl.instance().positionTitle);
         dropDownMenu.close();
-        Log.i("dropdown:", "youchoose:==>" + FilterUrl.instance().toString());
-        initData(null, null, FilterUrl.instance().positionTitle);
+        if (FilterUrl.instance().position == 0) {
+            if (FilterUrl.instance().positionTitle.equals("不限"))
+                FilterUrl.instance().positionTitle = null;
+            fil_subject = FilterUrl.instance().positionTitle;
+        } else if (FilterUrl.instance().position == 1) {
+            if (FilterUrl.instance().positionTitle.equals("不限"))
+                FilterUrl.instance().positionTitle = null;
+            fil_sex = FilterUrl.instance().positionTitle;
+        } else if (FilterUrl.instance().position == 2) {
+            if (FilterUrl.instance().positionTitle.equals("不限"))
+                FilterUrl.instance().positionTitle = null;
+            fil_adress = FilterUrl.instance().positionTitle;
+        }
+        initData(fil_sex, fil_adress, fil_subject);
 //        getData(FilterUrl.instance().getChoose());
         FilterUrl.instance().clear();
 //        mFilterContentView.setText(FilterUrl.instance().toString());
-    }
-
-    private void getData(String content) {
-        Log.i("dropdown:", "youchoose1:==>" + content);
-        mData1.clear();
-        if (TextUtils.isEmpty(content)) {//获取所有
-            for (AllUserBean.DataBean.UserBean data : mAllData) {
-                mData1.add(data);
-            }
-        } else
-            for (AllUserBean.DataBean.UserBean data : mAllData) {
-                if (content.contains(data.getSubject_id())) {//获取特定
-                    mData1.add(data);
-                }
-            }
-        if (mData1.size() < 1)
-            Toast.makeText(this, "数据为空", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -159,6 +156,7 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
      * @param subject_id 科目
      */
     public void initData(String sex, String address, String subject_id) {
+        Log.i("teacheractivity", "initData: " + sex + address + subject_id);
         List<Param> params = new ArrayList<>();
         params.add(new Param("type", "1"));
         if (!TextUtils.isEmpty(sex))
@@ -170,7 +168,11 @@ public class TeacherActivity extends Activity implements OnFilterDoneListener {
         OkHttpUtils.post(apiServer.URL_Get_Teacher, new OkHttpUtils.ResultCallback<AllUserBean>() {
             @Override
             public void onSuccess(AllUserBean data) {
-                mAllData = data.getData().getUser();
+                if (data.getCode() == 200) {
+                    if (mAllData != null)
+                        mAllData.clear();
+                    mAllData = data.getData().getUser();
+                }
                 initView();
             }
 

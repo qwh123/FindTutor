@@ -41,6 +41,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lljjcoder.citypickerview.widget.CityPickerView;
 
@@ -339,7 +340,17 @@ public class Utils {
      * @param context 上下文
      * @param view    当前view
      */
-    public static void setChooseCity(Context context, final TextView view) {
+    public static void setChooseCity(Context context, TextView view) {
+        setChooseCity(context, view, false);
+    }
+
+    /**
+     * 城市选择
+     *
+     * @param context 上下文
+     * @param view    当前view
+     */
+    public static void setChooseCity(final Context context, final TextView view, final boolean isChange) {
         final CityPickerView cityPickerView = new CityPickerView(context);
         cityPickerView.show();
         cityPickerView.setOnCityItemClickListener(new CityPickerView.OnCityItemClickListener() {
@@ -352,6 +363,25 @@ public class Utils {
                 }
                 view.setTag(citySelected[3]);//邮编
                 Log.i("citypick", "showCityPick: " + citySelected[3]);
+                if (isChange) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(2000);
+                                ((Activity) context).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        view.setText("福州");
+                                        Toast.makeText(context, "目前仅支持福州市区...", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }
             }
         });
     }

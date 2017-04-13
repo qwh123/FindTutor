@@ -88,7 +88,8 @@ public class DropMenuAdapter implements MenuAdapter {
                 break;
             case 2:
                 // view = createDoubleGrid();
-                view = createBetterDoubleGrid();
+//                view = createBetterDoubleGrid();
+                view = createSingleListView1();
                 break;
         }
 
@@ -122,10 +123,49 @@ public class DropMenuAdapter implements MenuAdapter {
                 });
 
         List<String> list = new ArrayList<>();
-        list.add("综合排序");
-        list.add("时间排序");
-        list.add("价格排序");
+        list.add("不限");
+        list.add("男");
+        list.add("女");
         singleListView.setList(list, -1);
+
+        return singleListView;
+    }
+
+    private View createSingleListView1() {
+        SingleListView<String> singleListView = new SingleListView<String>(mContext)
+                .adapter(new SimpleTextAdapter<String>(null, mContext) {
+                    @Override
+                    public String provideText(String string) {
+                        return string;
+                    }
+
+                    @Override
+                    protected void initCheckedTextView(FilterCheckedTextView checkedTextView) {
+                        int dp = UIUtil.dp(mContext, 15);
+                        checkedTextView.setPadding(dp, dp, 0, dp);
+                    }
+                })
+                .onItemClick(new OnFilterItemClickListener<String>() {
+                    @Override
+                    public void onItemClick(String item) {
+                        FilterUrl.instance().singleListPosition = item;
+
+                        FilterUrl.instance().position = 2;
+                        FilterUrl.instance().positionTitle = item;
+
+                        onFilterDone();
+                    }
+                });
+
+        List<String> areas = new ArrayList<>();
+        areas.add("不限");
+        areas.add("仓山");
+        areas.add("连江");
+        areas.add("鼓楼");
+        areas.add("闽侯");
+        areas.add("马尾");
+        areas.add("台江");
+        singleListView.setList(areas, -1);
 
         return singleListView;
     }
@@ -190,7 +230,7 @@ public class DropMenuAdapter implements MenuAdapter {
                 });
 
 
-        List<FilterType> list =new CourseMode().getFilterType();
+        List<FilterType> list = new CourseMode().getFilterType();
 
         //初始化选中.
         comTypeDoubleListView.setLeftList(list, -1);

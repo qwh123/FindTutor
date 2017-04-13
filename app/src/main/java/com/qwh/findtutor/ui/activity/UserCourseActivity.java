@@ -44,7 +44,7 @@ public class UserCourseActivity extends AppCompatActivity {
     private List<TutorBean> mData;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_course);
         ButterKnife.bind(this);

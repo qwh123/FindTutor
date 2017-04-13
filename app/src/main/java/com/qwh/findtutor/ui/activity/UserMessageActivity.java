@@ -163,7 +163,8 @@ public class UserMessageActivity extends BaseActivity {
                 try {
                     File f = new File(urlpath);
                     if (f.exists()) {
-                        Log.i("AsyncHttp", "Yes");
+
+                        Log.i("AsyncHttp", "Yes" + "name:" + f.getName());
                         params.put("icon", f);
                     } else {
                         Log.i("AsyncHttp", "No");
@@ -171,9 +172,9 @@ public class UserMessageActivity extends BaseActivity {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                Log.i("AsyncHttp", "afterCrop: "+params.toString());
+                Log.i("AsyncHttp", "afterCrop: " + params.toString());
                  /*//////////////
-		         * /把文件上传*/
+                 * /把文件上传*/
                 client.post(apiServer.URL_User_Message_Update_ICON, params, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int i, org.apache.http.Header[] headers, byte[] bytes) {
@@ -239,8 +240,11 @@ public class UserMessageActivity extends BaseActivity {
         OkHttpUtils.post(apiServer.URL_User_Message, new OkHttpUtils.ResultCallback<UserInfoBean>() {
             @Override
             public void onSuccess(UserInfoBean data) {
-                user = data.getData().get(0);
-                initView();
+                if (data.getCode() == 200) {
+
+                    user = data.getData().get(0);
+                    initView();
+                }
             }
 
             @Override

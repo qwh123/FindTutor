@@ -57,7 +57,7 @@ public class SearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
-
+        initView();
     }
 
 
@@ -94,9 +94,9 @@ public class SearchActivity extends Activity {
             public void setData(ViewHolder holder, SearchResultBean.DataBean data) {
                 holder.setImageWithUrl(R.id.item_main_rv_icon, data.getIcon());
                 holder.setText(R.id.item_main_rv_name, data.getNickname());
-                holder.setText(R.id.item_main_rv_level, data.getEducation_bg());
-                holder.setText(R.id.item_main_rv_adress, data.getAddress());
-//                holder.setText(R.id.item_main_rv_summary, data.get());
+                holder.setText(R.id.item_main_rv_level, "当前水平:" + data.getEducation_bg());
+                holder.setText(R.id.item_main_rv_adress, "所在地址:" + data.getAddress());
+                holder.setText(R.id.item_main_rv_summary, "注册时间:" + data.getCreat_time());
             }
         };
         rvSearch.setAdapter(mAdapter);

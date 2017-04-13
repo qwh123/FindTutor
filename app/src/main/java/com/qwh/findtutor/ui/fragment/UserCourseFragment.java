@@ -24,6 +24,7 @@ import com.qwh.findtutor.bean.CommonBean;
 import com.qwh.findtutor.bean.MyClassBean;
 import com.qwh.findtutor.bean.Param;
 import com.qwh.findtutor.bean.SharedSaveConstant;
+import com.qwh.findtutor.bean.UserCourseBean;
 import com.qwh.findtutor.bean.test.TutorBean;
 import com.qwh.findtutor.http.OkHttpUtils;
 import com.qwh.findtutor.http.apiServer;
@@ -46,8 +47,10 @@ public class UserCourseFragment extends BaseFragment {
     @Bind(R.id.recyclerView_user_course_ing)
     RecyclerView recyclerView;
 
-    private List<MyClassBean.DataBean.OrderBean> mData = new ArrayList<>();
-    private CommonAdapter<MyClassBean.DataBean.OrderBean> mAdapter;
+    //    private List<MyClassBean.DataBean.OrderBean> mData = new ArrayList<>();
+//    private CommonAdapter<MyClassBean.DataBean.OrderBean> mAdapter;
+    private CommonAdapter<UserCourseBean> mAdapter;
+    private List<UserCourseBean> mOverList = new ArrayList<>();//已结课名单
     private int mPage;
 
 
@@ -60,26 +63,31 @@ public class UserCourseFragment extends BaseFragment {
     protected void initViews() {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new CommonAdapter<MyClassBean.DataBean.OrderBean>(getActivity(), R.layout.item_user_course, mData) {
+        mAdapter = new CommonAdapter<UserCourseBean>(getActivity(), R.layout.item_user_course, mOverList) {
             @Override
-            public void setData(ViewHolder holder, final MyClassBean.DataBean.OrderBean bean) {
-                MyClassBean.DataBean.OrderBean.UserInfoBean user = bean.getUser_info();
+            public void setData(ViewHolder holder, final UserCourseBean user) {
+//                MyClassBean.DataBean.OrderBean.UserInfoBean user = bean.getUser_info();
                 holder.setVisible(R.id.labelView_course, false);
+                if (user.getType().equals("1")) {//1.主动约的课程，可以评价
+                    holder.setBtnEnable(R.id.item_main_btn_comment, true);
+                } else {//我发布的课程，不可评价
+                    holder.setBtnEnable(R.id.item_main_btn_comment, false);
+                }
                 holder.setBtnText(R.id.item_main_btn_comment, "评价");
                 holder.setOnClickListener(R.id.item_main_btn_comment, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         startActivity(new Intent(getActivity(), CommentActivity.class)
-                                .putExtra("user_id", bean.getUser_info().getId()));
+                                .putExtra("order_id", user.getOrderId()));
                     }
                 });
                 if (user.getIcon().equals(""))
                     holder.setImageResource(R.id.item_user_course_icon, R.drawable.img_user);
                 else
                     holder.setImageWithUrl(R.id.item_user_course_icon, user.getIcon());
-                holder.setText(R.id.item_user_course_name, user.getNickname());
+                holder.setText(R.id.item_user_course_name, user.getName());
                 holder.setVisible(R.id.item_user_course_level, false);
-                holder.setText(R.id.item_user_course_type, "所在地址: " + user.getAddress());
+                holder.setText(R.id.item_user_course_type, "所在地址: " + user.getAdress());
                 holder.setText(R.id.item_user_course_summary, "备注：" + user.getDetail());
             }
         };
@@ -91,9 +99,13 @@ public class UserCourseFragment extends BaseFragment {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
                 startActivity(new Intent(getActivity(), TeacherDetailActivity.class)
-                        .putExtra("teacher_name", mData.get(position).getUser_info().getNickname())
-                        .putExtra("id", mData.get(position).getUser_info().getId())
+                                .putExtra("teacher_name", mOverList.get(position).getName())
+                                .putExtra("id", mOverList.get(position).getId())
+//                        .putExtra("teacher_name", mData.get(position).getUser_info().getNickname())
+//                        .putExtra("id", mData.get(position).getUser_info().getId())
                 );
+
+//                Log.i("order_id", "查看评论列表的id: " + mData.get(position).getUser_info().getId());
             }
 
             @Override
@@ -114,15 +126,39 @@ public class UserCourseFragment extends BaseFragment {
             public void onSuccess(MyClassBean data) {
                 Log.i("usercourseFragment", "onSuccess: ");
                 if (data.getCode() == 200 && data.getData() != null) {
-                    Log.i("myClass", "onSuccess: " + data.getData().get(0).getId());
-                    for (MyClassBean.DataBean da : data.getData()) {
-                        for (MyClassBean.DataBean.OrderBean bean : da.getOrder()) {
-                            if (bean.getState().equals("5"))
-                                mData.add(bean);
+                    if (data.getData().size() > 0) {
+                        for (MyClassBean.DataBean da : data.getData()) {
+                            for (MyClassBean.DataBean.OrderBean bean : da.getOrder()) {
+                                if (bean.getState().equals("5")) {
+//                                mData.add(bean);
+                                    UserCourseBean courseBean = new UserCourseBean();
+                                    if (PreferenceUtil.getString(SharedSaveConstant.User_Id, "")
+                                            .equals(bean.getUser_info().getId())) {
+                                        courseBean.setOrderId(bean.getOrder_id());
+                                        courseBean.setId(da.getUser_id());
+                                        courseBean.setName(da.getNickname());
+                                        courseBean.setIcon(da.getIcon());
+                                        courseBean.setLevel(da.getContact());
+                                        courseBean.setType("1");
+                                        courseBean.setAdress(da.getAddress());
+                                        courseBean.setDetail(da.getDetail());
+                                    } else {
+                                        courseBean.setId(bean.getUser_info().getId());
+                                        courseBean.setOrderId(bean.getOrder_id());
+                                        courseBean.setName(bean.getUser_info().getNickname());
+                                        courseBean.setIcon(bean.getUser_info().getIcon());
+                                        courseBean.setLevel(bean.getUser_info().getContact());
+                                        courseBean.setType("2");
+                                        courseBean.setAdress(bean.getUser_info().getAddress());
+                                        courseBean.setDetail(bean.getUser_info().getDetail());
+                                    }
+                                    mOverList.add(courseBean);
+                                }
+                            }
                         }
-                    }
-                    if (mData.size() > 0) {
-                        initViews();
+                        if (mOverList.size() > 0) {
+                            initViews();
+                        }
                     }
                 } else {
                 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,6 +52,8 @@ public class HomeFragment extends BaseFragment {
 
     @Bind(R.id.ibtn_home_search)
     ImageButton ibtnSearch;
+    @Bind(R.id.srl_home)
+    SwipeRefreshLayout mRefreshLayout;
     @Bind(R.id.tv_home_adress)
     TextView tvAdress;
     @Bind(R.id.banner_home)
@@ -91,6 +94,7 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     protected void initViews() {
+        initRefresh();
         //填充轮播图
         initBanner();
         if (!PreferenceUtil.getString(SharedSaveConstant.User_Type, "").equals("1")) {
@@ -104,6 +108,21 @@ public class HomeFragment extends BaseFragment {
         }
         //填充推荐表数据
         initRvRec();
+    }
+
+    private void initRefresh() {
+        mRefreshLayout.setColorSchemeResources(android.R.color.holo_purple,
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_red_light);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                loadData();
+
+
+            }
+        });
     }
 
     private void initBanner() {
@@ -209,7 +228,7 @@ public class HomeFragment extends BaseFragment {
     private void initRvRec() {
         idMainRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (mData == null || mData.size() < 1) {
-            Toast.makeText(getActivity(), "数据为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "暂无推荐数据", Toast.LENGTH_SHORT).show();
             return;
         }
         mAdapter = new CommonAdapter<IHomeBean.DataBean.IHomeUserBean>(getActivity(), R.layout.item_main_rv, mData) {
@@ -254,7 +273,8 @@ public class HomeFragment extends BaseFragment {
                 break;
             case R.id.tv_home_adress:
 //                startActivity(new Intent(getActivity(), CategoryActivity.class));
-                Utils.setChooseCity(getActivity(), tvAdress);
+                Utils.setChooseCity(getActivity(), tvAdress, true);
+
                 break;
             case R.id.rl_home_teacher:
 
@@ -284,13 +304,24 @@ public class HomeFragment extends BaseFragment {
 
                     mData = response.getData().getIHome_user();
                     mBanner = response.getData().getBanner();
-                    initViews();
+                    if (mRefreshLayout != null && mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.setRefreshing(false);
+                        mAdapter.notifyDataSetChanged();
+                    } else
+                        initViews();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.setRefreshing(false);
+                    }
                 }
+
             }
 
             @Override
             public void onFailure(Exception e) {
-
+                if (mRefreshLayout != null && mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.setRefreshing(false);
+                }
             }
         });
     }

@@ -59,11 +59,7 @@ public class NeedCenterTeacherFragment extends BaseFragment {
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (mList != null)
-                    mList.clear();
                 loadData();
-
-
             }
         });
     }
@@ -120,12 +116,18 @@ public class NeedCenterTeacherFragment extends BaseFragment {
             public void onSuccess(ReleaseUserBean data) {
                 if (data.getCode() == 200) {
                     mList = data.getData();
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.setRefreshing(false);
+                        mAdapter.notifyDataSetChanged();
+                        return;
+                    }
                     initViews();
+                }else{
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.setRefreshing(false);
+                    }
                 }
 
-                if (mRefreshLayout.isRefreshing()) {
-                    mRefreshLayout.setRefreshing(false);
-                }
             }
 
             @Override
